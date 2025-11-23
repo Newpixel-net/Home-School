@@ -1,446 +1,1006 @@
-
-
-
- <meta>
- <meta name="viewport">
- <title>🎨 Coloring Book - Mia's Home School</title>
-a
- <!-- Firebase SDK -->
- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-
- <style>
- * {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
- }
-
- body {
- font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
- min-height: 100vh;
- padding: 20px;
- }
-
- .header {
- display: flex;
- justify-content: space-between;
- align-items: center;
- background: white;
- padding: 15px 25px;
- border-radius: 15px;
- margin-bottom: 20px;
- box-shadow: 0 4px 6px rgba(0,0,0,0.1);
- }
-
- .header h1 {
- font-size: 1.5rem;
- color: #2d3748;
- }
-
- .btn {
- padding: 10px 20px;
- border: none;
- border-radius: 10px;
- font-weight: 600;
- cursor: pointer;
- transition: all 0.2s;
- }
-
- .btn-back {
- background: #e2e8f0;
- color: #2d3748;
- }
-
- .btn-back:hover {
- background: #cbd5e0;
- }
-
- .btn-primary {
- background: linear-gradient(135deg, #667eea, #764ba2);
- color: white;
- margin-left: 10px;
- }
-
- .btn-primary:hover {
- transform: translateY(-2px);
- box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
- }
-
- .workspace {
- display: grid;
- grid-template-columns: 200px 1fr;
- gap: 20px;
- max-width: 1400px;
- margin: 0 auto;
- }
-
- .tools-panel {
- background: white;
- border-radius: 15px;
- padding: 20px;
- box-shadow: 0 4px 6px rgba(0,0,0,0.1);
- }
-
- .tools-panel h3 {
- margin-bottom: 15px;
- color: #2d3748;
- font-size: 1rem;
- }
-
- .color-palette {
- display: grid;
- grid-template-columns: repeat(4, 1fr);
- gap: 8px;
- margin-bottom: 20px;
- }
-
- .color-swatch {
- width: 100%;
- aspect-ratio: 1;
- border-radius: 8px;
- cursor: pointer;
- border: 3px solid transparent;
- transition: all 0.2s;
- }
-
- .color-swatch:hover {
- transform: scale(1.1);
- box-shadow: 0 2px 8px rgba(0,0,0,0.2);
- }
-
- .color-swatch.active {
- border-color: #2d3748;
- transform: scale(1.15);
- }
-
- .brush-sizes {
- display: flex;
- flex-direction: column;
- gap: 8px;
- margin-bottom: 20px;
- }
-
- .brush-btn {
- padding: 10px;
- background: #f7fafc;
- border: 2px solid #e2e8f0;
- border-radius: 8px;
- cursor: pointer;
- transition: all 0.2s;
- font-weight: 600;
- }
-
- .brush-btn:hover {
- background: #edf2f7;
- }
-
- .brush-btn.active {
- background: #667eea;
- color: white;
- border-color: #667eea;
- }
-
- .tool-btn {
- width: 100%;
- margin-bottom: 10px;
- }
-
- .canvas-area {
- background: white;
- border-radius: 15px;
- padding: 20px;
- box-shadow: 0 4px 6px rgba(0,0,0,0.1);
- display: flex;
- align-items: center;
- justify-content: center;
- }
-
- #drawing-canvas {
- border: 2px solid #e2e8f0;
- border-radius: 10px;
- cursor: crosshair;
- background: white;
- max-width: 100%;
- box-shadow: 0 2px 4px rgba(0,0,0,0.1);
- }
-
- @media (max-width: 768px) {
- .workspace {
- grid-template-columns: 1fr;
- }
-
- .tools-panel {
- order: 2;
- }
-
- .color-palette {
- grid-template-columns: repeat(8, 1fr);
- }
- }
- </style>
-
-
- <div class="header">
- <h1>🎨 Coloring Book</h1>
- <div>
- <button class="btn btn-back">← Back</button>
- <button class="btn btn-primary" id="save-btn">💾 Save</button>
- </div>
- </div>
-
- <div class="workspace">
- <aside class="tools-panel">
- <h3>Colors</h3>
- <div class="color-palette" id="color-palette"></div>
-
- <h3>Brush Size</h3>
- <div class="brush-sizes">
- <button class="brush-btn" data-size="2">Small</button>
- <button class="brush-btn active" data-size="5">Medium</button>
- <button class="brush-btn" data-size="10">Large</button>
- <button class="brush-btn" data-size="20">Extra Large</button>
- </div>
-
- <h3>Tools</h3>
- <button class="btn btn-primary tool-btn" id="clear-btn">🗑️ Clear Canvas</button>
- <button class="btn btn-primary tool-btn" id="undo-btn">↩️ Undo</button>
- </aside>
-
- <main class="canvas-area">
- <canvas id="drawing-canvas" width="800" height="600"></canvas>
- </main>
- </div>
-
- <script>
- // Coloring Book Application
- class ColoringBook {
- constructor() {
- this.canvas = document.getElementById('drawing-canvas');
- this.ctx = this.canvas.getContext('2d');
- this.isDrawing = false;
- this.currentColor = '#FF6B6B';
- this.brushSize = 5;
- this.history = [];
- this.maxHistory = 20;
-
- this.init();
- }
-
- init() {
- console.log('&#127912; Coloring Book initializing...');
-
- // Setup canvas
- this.setupCanvas();
-
- // Generate color palette
- this.generateColorPalette();
-
- // Setup event listeners
- this.setupEventListeners();
-
- console.log('&#9989; Coloring Book ready!');
- }
-
- setupCanvas() {
- // Set canvas size to be responsive
- const container = this.canvas.parentElement;
- const maxWidth = Math.min(800, container.clientWidth - 40);
- const aspectRatio = 600 / 800;
-
- this.canvas.width = maxWidth;
- this.canvas.height = maxWidth * aspectRatio;
-
- // Set drawing styles
- this.ctx.lineCap = 'round';
- this.ctx.lineJoin = 'round';
-
- // Fill with white background
- this.ctx.fillStyle = 'white';
- this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
- // Save initial state
- this.saveToHistory();
- }
-
- generateColorPalette() {
- const colors = [
- '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
- '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
- '#F8B195', '#F67280', '#C06C84', '#6C5B7B',
- '#355C7D', '#2C3E50', '#34495E', '#ECF0F1',
- '#E74C3C', '#3498DB', '#2ECC71', '#F39C12',
- '#9B59B6', '#1ABC9C', '#E67E22', '#95A5A6'
- ];
-
- const palette = document.getElementById('color-palette');
- palette.innerHTML = '';
-
- colors.forEach((color, index) => {
- const swatch = document.createElement('div');
- swatch.className = 'color-swatch' + (index === 0 ? ' active' : '');
- swatch.style.backgroundColor = color;
- swatch.dataset.color = color;
-
- swatch.addEventListener('click', () => {
- document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
- swatch.classList.add('active');
- this.currentColor = color;
- console.log(`Color selected: ${color}`);
- });
-
- palette.appendChild(swatch);
- });
- }
-
- setupEventListeners() {
- // Mouse events
- this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
- this.canvas.addEventListener('mousemove', this.draw.bind(this));
- this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
- this.canvas.addEventListener('mouseout', this.stopDrawing.bind(this));
-
- // Touch events for mobile
- this.canvas.addEventListener('touchstart', (e) => {
- e.preventDefault();
- const touch = e.touches[0];
- const rect = this.canvas.getBoundingClientRect();
- const mouseEvent = new MouseEvent('mousedown', {
- clientX: touch.clientX,
- clientY: touch.clientY
- });
- this.canvas.dispatchEvent(mouseEvent);
- });
-
- this.canvas.addEventListener('touchmove', (e) => {
- e.preventDefault();
- const touch = e.touches[0];
- const mouseEvent = new MouseEvent('mousemove', {
- clientX: touch.clientX,
- clientY: touch.clientY
- });
- this.canvas.dispatchEvent(mouseEvent);
- });
-
- this.canvas.addEventListener('touchend', (e) => {
- e.preventDefault();
- const mouseEvent = new MouseEvent('mouseup', {});
- this.canvas.dispatchEvent(mouseEvent);
- });
-
- // Brush size buttons
- document.querySelectorAll('.brush-btn').forEach(btn => {
- btn.addEventListener('click', () => {
- document.querySelectorAll('.brush-btn').forEach(b => b.classList.remove('active'));
- btn.classList.add('active');
- this.brushSize = parseInt(btn.dataset.size);
- console.log(`Brush size: ${this.brushSize}`);
- });
- });
-
- // Tool buttons
- document.getElementById('clear-btn').addEventListener('click', () => {
- if (confirm('Are you sure you want to clear your drawing?')) {
- this.clearCanvas();
- }
- });
-
- document.getElementById('undo-btn').addEventListener('click', () => {
- this.undo();
- });
-
- document.getElementById('save-btn').addEventListener('click', () => {
- this.saveDrawing();
- });
- }
-
- startDrawing(e) {
- this.isDrawing = true;
- const rect = this.canvas.getBoundingClientRect();
- const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
- const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
-
- this.ctx.beginPath();
- this.ctx.moveTo(x, y);
- }
-
- draw(e) {
- if (!this.isDrawing) return;
-
- const rect = this.canvas.getBoundingClientRect();
- const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
- const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
-
- this.ctx.strokeStyle = this.currentColor;
- this.ctx.lineWidth = this.brushSize;
- this.ctx.lineTo(x, y);
- this.ctx.stroke();
- }
-
- stopDrawing() {
- if (!this.isDrawing) return;
- this.isDrawing = false;
- this.ctx.closePath();
- this.saveToHistory();
- }
-
- saveToHistory() {
- const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
- this.history.push(imageData);
-
- // Limit history size
- if (this.history.length > this.maxHistory) {
- this.history.shift();
- }
- }
-
- undo() {
- if (this.history.length <= 1) {
- alert('Nothing to undo!');
- return;
- }
-
- this.history.pop(); // Remove current state
- const previousState = this.history[this.history.length - 1];
- this.ctx.putImageData(previousState, 0, 0);
- console.log('Undo performed');
- }
-
- clearCanvas() {
- this.ctx.fillStyle = 'white';
- this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
- this.history = [];
- this.saveToHistory();
- console.log('Canvas cleared');
- }
-
- saveDrawing() {
- const dataURL = this.canvas.toDataURL('image/png');
- const link = document.createElement('a');
- link.download = `mia-coloring-${Date.now()}.png`;
- link.href = dataURL;
- link.click();
-
- console.log('Drawing saved!');
-
- // Show success message
- alert('&#127881; Your artwork has been saved!');
-
- // Track with Firebase
- if (window.firebaseManager && window.firebaseManager.initialized) {
- window.firebaseManager.trackEvent('drawing_saved', {
- timestamp: new Date().toISOString()
- });
- }
- }
- }
-
- // Initialize when page loads
- window.addEventListener('load', () => {
- new ColoringBook();
- });
- </script>
-
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎨 Coloring Book - Mia's Home School</title>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 15px 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  color: #2d3748;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.btn-back {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn-back:hover {
+  background: #cbd5e0;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #48BB78, #38A169);
+  color: white;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.tools-panel {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+}
+
+.tools-panel h3 {
+  margin-bottom: 15px;
+  margin-top: 20px;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.tools-panel h3:first-child {
+  margin-top: 0;
+}
+
+.color-palette {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.color-swatch {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.color-swatch.active {
+  border-color: #2d3748;
+  transform: scale(1.15);
+}
+
+.brush-sizes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.brush-btn {
+  padding: 10px;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.brush-btn:hover {
+  background: #edf2f7;
+}
+
+.brush-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.tool-btn {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.canvas-area {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#drawing-canvas {
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: crosshair;
+  background: white;
+  max-width: 100%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Gallery Modal */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  color: #2d3748;
+  font-size: 1.5rem;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-modal:hover {
+  color: #333;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-color: #667eea;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-item-actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  padding: 10px;
+  display: flex;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.gallery-item:hover .gallery-item-actions {
+  opacity: 1;
+}
+
+.gallery-item-btn {
+  flex: 1;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-load {
+  background: #667eea;
+}
+
+.btn-delete {
+  background: #f56565;
+}
+
+.empty-gallery {
+  text-align: center;
+  padding: 40px;
+  color: #a0aec0;
+}
+
+.empty-gallery p {
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+/* Progress indicator */
+.progress-indicator {
+  background: #f7fafc;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 4px solid #667eea;
+}
+
+.progress-indicator small {
+  color: #718096;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.progress-indicator strong {
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+/* Auto-save indicator */
+.autosave-status {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+  align-items: center;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.autosave-status.show {
+  display: flex;
+}
+
+.autosave-status.saving {
+  background: #FEF3C7;
+  border-left: 4px solid #F59E0B;
+}
+
+.autosave-status.saved {
+  background: #D1FAE5;
+  border-left: 4px solid #10B981;
+}
+
+@media (max-width: 768px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-panel {
+    order: 2;
+    max-height: none;
+  }
+
+  .color-palette {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎨 Coloring Book</h1>
+  <div class="header-actions">
+    <button class="btn btn-back" id="back-btn">← Back</button>
+    <button class="btn btn-primary" id="gallery-btn">🖼️ Gallery</button>
+    <button class="btn btn-success" id="save-btn">💾 Save</button>
+  </div>
+</div>
+
+<div class="workspace">
+  <aside class="tools-panel">
+    <div class="progress-indicator">
+      <small>Artworks Created</small>
+      <strong id="artwork-count">0</strong>
+    </div>
+
+    <h3>Colors</h3>
+    <div class="color-palette" id="color-palette"></div>
+
+    <h3>Brush Size</h3>
+    <div class="brush-sizes">
+      <button class="brush-btn" data-size="2">Small</button>
+      <button class="brush-btn active" data-size="5">Medium</button>
+      <button class="brush-btn" data-size="10">Large</button>
+      <button class="brush-btn" data-size="20">Extra Large</button>
+    </div>
+
+    <h3>Tools</h3>
+    <button class="btn btn-primary tool-btn" id="new-btn">📄 New Canvas</button>
+    <button class="btn btn-primary tool-btn" id="undo-btn">↩️ Undo</button>
+    <button class="btn btn-primary tool-btn" id="clear-btn">🗑️ Clear All</button>
+  </aside>
+
+  <main class="canvas-area">
+    <canvas id="drawing-canvas" width="800" height="600"></canvas>
+  </main>
+</div>
+
+<!-- Gallery Modal -->
+<div class="modal" id="gallery-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🖼️ Your Gallery</h2>
+      <button class="close-modal" id="close-gallery">×</button>
+    </div>
+    <div id="gallery-container">
+      <div class="empty-gallery">
+        <div style="font-size: 3rem;">🎨</div>
+        <p>No artwork yet!</p>
+        <p style="font-size: 0.9rem; margin-top: 5px;">Start creating and your masterpieces will appear here.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Auto-save Status -->
+<div class="autosave-status" id="autosave-status">
+  <span id="autosave-icon">⏳</span>
+  <span id="autosave-text">Saving...</span>
+</div>
+
+<script>
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k",
+  authDomain: "mia-home-school-513d2.firebaseapp.com",
+  projectId: "mia-home-school-513d2",
+  storageBucket: "mia-home-school-513d2.firebasestorage.app",
+  messagingSenderId: "645973670570",
+  appId: "1:645973670570:web:78782661d182ce9e17aed3",
+  measurementId: "G-6YGP5Z1ZQX"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+console.log('🔥 Firebase initialized');
+
+// Enhanced Coloring Book Application
+class ColoringBookEnhanced {
+  constructor() {
+    this.canvas = document.getElementById('drawing-canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.isDrawing = false;
+    this.currentColor = '#FF6B6B';
+    this.brushSize = 5;
+    this.history = [];
+    this.maxHistory = 20;
+    this.currentUser = null;
+    this.currentDrawingId = null;
+    this.autoSaveTimer = null;
+    this.gallery = [];
+
+    this.init();
+  }
+
+  init() {
+    console.log('🎨 Coloring Book initializing...');
+
+    // Setup canvas
+    this.setupCanvas();
+
+    // Generate color palette
+    this.generateColorPalette();
+
+    // Setup event listeners
+    this.setupEventListeners();
+
+    // Initialize auth
+    this.initAuth();
+
+    console.log('✅ Coloring Book ready!');
+  }
+
+  initAuth() {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        this.currentUser = user;
+        console.log('👤 User signed in:', user.email);
+        await this.loadUserGallery();
+        this.updateProgressDisplay();
+      } else {
+        console.log('👤 No user signed in');
+        this.currentUser = null;
+      }
+    });
+  }
+
+  setupCanvas() {
+    // Set canvas size to be responsive
+    const container = this.canvas.parentElement;
+    const maxWidth = Math.min(800, container.clientWidth - 40);
+    const aspectRatio = 600 / 800;
+
+    this.canvas.width = maxWidth;
+    this.canvas.height = maxWidth * aspectRatio;
+
+    // Set drawing styles
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+
+    // Fill with white background
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Save initial state
+    this.saveToHistory();
+  }
+
+  generateColorPalette() {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+      '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
+      '#F8B195', '#F67280', '#C06C84', '#6C5B7B',
+      '#355C7D', '#2C3E50', '#34495E', '#ECF0F1',
+      '#E74C3C', '#3498DB', '#2ECC71', '#F39C12',
+      '#9B59B6', '#1ABC9C', '#E67E22', '#95A5A6'
+    ];
+
+    const palette = document.getElementById('color-palette');
+    palette.innerHTML = '';
+
+    colors.forEach((color, index) => {
+      const swatch = document.createElement('div');
+      swatch.className = 'color-swatch' + (index === 0 ? ' active' : '');
+      swatch.style.backgroundColor = color;
+      swatch.dataset.color = color;
+
+      swatch.addEventListener('click', () => {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        this.currentColor = color;
+      });
+
+      palette.appendChild(swatch);
+    });
+  }
+
+  setupEventListeners() {
+    // Mouse events
+    this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
+    this.canvas.addEventListener('mousemove', this.draw.bind(this));
+    this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
+    this.canvas.addEventListener('mouseout', this.stopDrawing.bind(this));
+
+    // Touch events for mobile
+    this.canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent('mousedown', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      this.canvas.dispatchEvent(mouseEvent);
+    });
+
+    this.canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent('mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      this.canvas.dispatchEvent(mouseEvent);
+    });
+
+    this.canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      const mouseEvent = new MouseEvent('mouseup', {});
+      this.canvas.dispatchEvent(mouseEvent);
+    });
+
+    // Brush size buttons
+    document.querySelectorAll('.brush-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.brush-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.brushSize = parseInt(btn.dataset.size);
+      });
+    });
+
+    // Tool buttons
+    document.getElementById('new-btn').addEventListener('click', () => {
+      if (confirm('Start a new canvas? Any unsaved changes will be lost.')) {
+        this.newCanvas();
+      }
+    });
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      if (confirm('Clear everything? This cannot be undone!')) {
+        this.clearCanvas();
+      }
+    });
+
+    document.getElementById('undo-btn').addEventListener('click', () => {
+      this.undo();
+    });
+
+    document.getElementById('save-btn').addEventListener('click', () => {
+      this.saveDrawing();
+    });
+
+    document.getElementById('gallery-btn').addEventListener('click', () => {
+      this.showGallery();
+    });
+
+    document.getElementById('close-gallery').addEventListener('click', () => {
+      this.hideGallery();
+    });
+
+    document.getElementById('back-btn').addEventListener('click', () => {
+      window.location.href = '/dashboard';
+    });
+
+    // Click outside gallery modal to close
+    document.getElementById('gallery-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'gallery-modal') {
+        this.hideGallery();
+      }
+    });
+  }
+
+  startDrawing(e) {
+    this.isDrawing = true;
+    const rect = this.canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+  }
+
+  draw(e) {
+    if (!this.isDrawing) return;
+
+    const rect = this.canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
+
+    this.ctx.strokeStyle = this.currentColor;
+    this.ctx.lineWidth = this.brushSize;
+    this.ctx.lineTo(x, y);
+    this.ctx.stroke();
+  }
+
+  stopDrawing() {
+    if (!this.isDrawing) return;
+    this.isDrawing = false;
+    this.ctx.closePath();
+    this.saveToHistory();
+
+    // Trigger auto-save after 2 seconds of inactivity
+    clearTimeout(this.autoSaveTimer);
+    this.autoSaveTimer = setTimeout(() => {
+      if (this.currentUser && this.currentDrawingId) {
+        this.autoSave();
+      }
+    }, 2000);
+  }
+
+  saveToHistory() {
+    const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    this.history.push(imageData);
+
+    if (this.history.length > this.maxHistory) {
+      this.history.shift();
+    }
+  }
+
+  undo() {
+    if (this.history.length <= 1) {
+      return;
+    }
+
+    this.history.pop();
+    const previousState = this.history[this.history.length - 1];
+    this.ctx.putImageData(previousState, 0, 0);
+  }
+
+  clearCanvas() {
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.history = [];
+    this.saveToHistory();
+  }
+
+  newCanvas() {
+    this.clearCanvas();
+    this.currentDrawingId = null;
+  }
+
+  async saveDrawing() {
+    if (!this.currentUser) {
+      alert('🔑 Please sign in to save your artwork!');
+      return;
+    }
+
+    this.showAutoSaveStatus('saving');
+
+    try {
+      const dataURL = this.canvas.toDataURL('image/png');
+      const blob = await (await fetch(dataURL)).blob();
+
+      // Generate unique ID
+      const drawingId = this.currentDrawingId || `drawing_${Date.now()}`;
+      const filePath = `users/${this.currentUser.uid}/coloring/${drawingId}.png`;
+
+      // Upload to Firebase Storage
+      const storageRef = storage.ref(filePath);
+      await storageRef.put(blob);
+      const downloadURL = await storageRef.getDownloadURL();
+
+      // Save metadata to Firestore
+      await db.collection('users').doc(this.currentUser.uid).collection('coloringArt').doc(drawingId).set({
+        id: drawingId,
+        imageUrl: downloadURL,
+        storagePath: filePath,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      this.currentDrawingId = drawingId;
+
+      // Update user stats
+      await this.updateUserStats();
+
+      // Track activity in dashboard
+      if (window.MiaHomeDashboard && window.MiaHomeDashboard.addActivity) {
+        await window.MiaHomeDashboard.addActivity(
+          'completion',
+          'Created new artwork',
+          { drawingId: drawingId }
+        );
+      }
+
+      // Reload gallery
+      await this.loadUserGallery();
+
+      this.showAutoSaveStatus('saved');
+
+      console.log('✅ Drawing saved successfully!');
+    } catch (error) {
+      console.error('❌ Error saving drawing:', error);
+      alert('Failed to save drawing. Please try again.');
+      this.hideAutoSaveStatus();
+    }
+  }
+
+  async autoSave() {
+    if (!this.currentUser || !this.currentDrawingId) return;
+
+    try {
+      this.showAutoSaveStatus('saving');
+
+      const dataURL = this.canvas.toDataURL('image/png');
+      const blob = await (await fetch(dataURL)).blob();
+
+      const filePath = `users/${this.currentUser.uid}/coloring/${this.currentDrawingId}.png`;
+      const storageRef = storage.ref(filePath);
+      await storageRef.put(blob);
+      const downloadURL = await storageRef.getDownloadURL();
+
+      // Update metadata
+      await db.collection('users').doc(this.currentUser.uid).collection('coloringArt').doc(this.currentDrawingId).update({
+        imageUrl: downloadURL,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      this.showAutoSaveStatus('saved');
+    } catch (error) {
+      console.error('Auto-save error:', error);
+      this.hideAutoSaveStatus();
+    }
+  }
+
+  showAutoSaveStatus(status) {
+    const statusEl = document.getElementById('autosave-status');
+    const icon = document.getElementById('autosave-icon');
+    const text = document.getElementById('autosave-text');
+
+    statusEl.className = 'autosave-status show ' + status;
+
+    if (status === 'saving') {
+      icon.textContent = '⏳';
+      text.textContent = 'Saving...';
+    } else if (status === 'saved') {
+      icon.textContent = '✅';
+      text.textContent = 'Saved!';
+      setTimeout(() => this.hideAutoSaveStatus(), 2000);
+    }
+  }
+
+  hideAutoSaveStatus() {
+    document.getElementById('autosave-status').classList.remove('show');
+  }
+
+  async loadUserGallery() {
+    if (!this.currentUser) return;
+
+    try {
+      const snapshot = await db.collection('users')
+        .doc(this.currentUser.uid)
+        .collection('coloringArt')
+        .orderBy('createdAt', 'desc')
+        .get();
+
+      this.gallery = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      console.log(`🖼️ Loaded ${this.gallery.length} artworks`);
+    } catch (error) {
+      console.error('Error loading gallery:', error);
+    }
+  }
+
+  showGallery() {
+    const modal = document.getElementById('gallery-modal');
+    const container = document.getElementById('gallery-container');
+
+    if (this.gallery.length === 0) {
+      container.innerHTML = `
+        <div class="empty-gallery">
+          <div style="font-size: 3rem;">🎨</div>
+          <p>No artwork yet!</p>
+          <p style="font-size: 0.9rem; margin-top: 5px;">Start creating and your masterpieces will appear here.</p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `<div class="gallery-grid" id="gallery-grid"></div>`;
+      const grid = document.getElementById('gallery-grid');
+
+      this.gallery.forEach(artwork => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `
+          <img src="${artwork.imageUrl}" alt="Artwork">
+          <div class="gallery-item-actions">
+            <button class="gallery-item-btn btn-load" data-id="${artwork.id}">Open</button>
+            <button class="gallery-item-btn btn-delete" data-id="${artwork.id}">Delete</button>
+          </div>
+        `;
+
+        // Load button
+        item.querySelector('.btn-load').addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.loadDrawing(artwork.id);
+        });
+
+        // Delete button
+        item.querySelector('.btn-delete').addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.deleteDrawing(artwork.id);
+        });
+
+        grid.appendChild(item);
+      });
+    }
+
+    modal.classList.add('show');
+  }
+
+  hideGallery() {
+    document.getElementById('gallery-modal').classList.remove('show');
+  }
+
+  async loadDrawing(drawingId) {
+    const artwork = this.gallery.find(a => a.id === drawingId);
+    if (!artwork) return;
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+      this.history = [];
+      this.saveToHistory();
+      this.currentDrawingId = drawingId;
+      this.hideGallery();
+      console.log('✅ Drawing loaded!');
+    };
+    img.src = artwork.imageUrl;
+  }
+
+  async deleteDrawing(drawingId) {
+    if (!confirm('Delete this artwork permanently?')) return;
+
+    try {
+      const artwork = this.gallery.find(a => a.id === drawingId);
+
+      // Delete from Storage
+      if (artwork.storagePath) {
+        await storage.ref(artwork.storagePath).delete();
+      }
+
+      // Delete from Firestore
+      await db.collection('users')
+        .doc(this.currentUser.uid)
+        .collection('coloringArt')
+        .doc(drawingId)
+        .delete();
+
+      // Update local gallery
+      await this.loadUserGallery();
+
+      // Update stats
+      await this.updateUserStats();
+
+      // Refresh gallery view
+      this.showGallery();
+
+      console.log('✅ Drawing deleted');
+    } catch (error) {
+      console.error('Error deleting drawing:', error);
+      alert('Failed to delete drawing. Please try again.');
+    }
+  }
+
+  async updateUserStats() {
+    if (!this.currentUser) return;
+
+    try {
+      const count = this.gallery.length;
+
+      // Update progress in user profile
+      if (window.MiaHomeDashboard && window.MiaHomeDashboard.updateModuleProgress) {
+        const progress = Math.min(100, count * 5); // 5% per artwork, max 100%
+        await window.MiaHomeDashboard.updateModuleProgress('coloring-book', progress);
+      }
+
+      // Check for achievements
+      this.checkAchievements(count);
+
+      this.updateProgressDisplay();
+    } catch (error) {
+      console.error('Error updating stats:', error);
+    }
+  }
+
+  updateProgressDisplay() {
+    document.getElementById('artwork-count').textContent = this.gallery.length;
+  }
+
+  async checkAchievements(count) {
+    if (!window.MiaHomeDashboard || !window.MiaHomeDashboard.addAchievement) return;
+
+    // First artwork
+    if (count === 1) {
+      await window.MiaHomeDashboard.addAchievement('first-artwork');
+    }
+
+    // Creative star (10 artworks)
+    if (count === 10) {
+      await window.MiaHomeDashboard.addAchievement('creative-star');
+    }
+  }
+}
+
+// Initialize when page loads
+window.addEventListener('load', () => {
+  new ColoringBookEnhanced();
+});
+</script>
+
+</body>
+</html>

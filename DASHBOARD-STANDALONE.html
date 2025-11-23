@@ -976,6 +976,27 @@
  </div>
  </div>
 
+ <!-- Avatar Picker Modal -->
+ <div id="avatar-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
+ <div style="background: white; padding: 2rem; border-radius: 1rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+ <h2 style="margin: 0 0 0.5rem 0; font-size: 1.5rem; color: #667EEA; text-align: center;">🎨 Choose Your Avatar</h2>
+ <p style="text-align: center; color: #718096; margin-bottom: 1.5rem; font-size: 0.9rem;">Pick an avatar that represents you!</p>
+
+ <div id="avatar-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;">
+ <!-- Avatars will be added by JavaScript -->
+ </div>
+
+ <div style="display: flex; gap: 0.75rem;">
+ <button id="avatar-skip-btn" style="flex: 1; padding: 0.875rem; background: #E2E8F0; color: #2D3748; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer;">
+ Skip for Now
+ </button>
+ <button id="avatar-confirm-btn" style="flex: 1; padding: 0.875rem; background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%); color: white; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer;" disabled>
+ Confirm
+ </button>
+ </div>
+ </div>
+ </div>
+
  <!-- Floating Auth Button -->
  <div id="auth-button-container" style="position: fixed; top: 1rem; right: 1rem; z-index: 1000;">
  <button id="auth-button" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%); color: white; border: none; border-radius: 2rem; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); display: flex; align-items: center; gap: 0.5rem;">
@@ -1418,6 +1439,17 @@
  currentUser = user;
  console.log('&#9989; User signed in:', user.email);
  await loadUserData(user.uid);
+
+ // Update streak on login
+ await updateStreak();
+
+ // Check if new user needs to pick avatar
+ if (userData && (!userData.avatar || userData.avatar === '&#127912;')) {
+ setTimeout(() => {
+ showAvatarPicker();
+ }, 1000); // Show after 1 second
+ }
+
  updateDashboard();
  updateAuthUI(user);
  } else {
@@ -1712,6 +1744,7 @@
  name: 'Mia',
  avatar: '&#127912;',
  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+ lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
  stats: {
  totalActivities: 0,
  timeSpent: 0,
@@ -1729,12 +1762,237 @@
  'science-explorer': 0
  },
  achievements: [],
+ activityFeed: [],
  settings: {
  soundEnabled: true,
  animationsEnabled: true,
  voiceEnabled: true
  }
  };
+ }
+
+ // ========================================
+ // AVATAR PICKER SYSTEM
+ // ========================================
+
+ const availableAvatars = ['&#127912;', '&#129409;', '&#128054;', '&#128049;', '&#128059;', '&#128040;', '&#128045;', '&#128029;', '&#128056;', '&#128028;', '&#127752;', '&#127775;', '&#127800;', '&#127801;', '&#127793;', '&#127826;', '&#127851;', '&#127883;', '&#127873;', '&#127882;'];
+ let selectedAvatar = null;
+
+ function showAvatarPicker() {
+ const modal = document.getElementById('avatar-modal');
+ const grid = document.getElementById('avatar-grid');
+
+ // Clear existing avatars
+ grid.innerHTML = '';
+
+ // Create avatar buttons
+ availableAvatars.forEach(avatar => {
+ const btn = document.createElement('button');
+ btn.innerHTML = avatar;
+ btn.style.cssText = 'font-size: 2rem; padding: 0.75rem; border: 3px solid #E2E8F0; border-radius: 0.75rem; background: white; cursor: pointer; transition: all 0.2s;';
+ btn.addEventListener('click', function() {
+ selectAvatar(avatar, btn);
+ });
+ btn.addEventListener('mouseenter', function() {
+ if (!btn.classList.contains('selected')) {
+ btn.style.transform = 'scale(1.1)';
+ }
+ });
+ btn.addEventListener('mouseleave', function() {
+ if (!btn.classList.contains('selected')) {
+ btn.style.transform = 'scale(1)';
+ }
+ });
+ grid.appendChild(btn);
+ });
+
+ modal.style.display = 'flex';
+ }
+
+ function selectAvatar(avatar, button) {
+ // Remove selection from all buttons
+ const allBtns = document.querySelectorAll('#avatar-grid button');
+ allBtns.forEach(btn => {
+ btn.style.borderColor = '#E2E8F0';
+ btn.style.transform = 'scale(1)';
+ btn.classList.remove('selected');
+ });
+
+ // Select this button
+ button.style.borderColor = '#667EEA';
+ button.style.transform = 'scale(1.15)';
+ button.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)';
+ button.classList.add('selected');
+ selectedAvatar = avatar;
+
+ // Enable confirm button
+ document.getElementById('avatar-confirm-btn').disabled = false;
+ document.getElementById('avatar-confirm-btn').style.opacity = '1';
+ }
+
+ function hideAvatarPicker() {
+ document.getElementById('avatar-modal').style.display = 'none';
+ selectedAvatar = null;
+ }
+
+ async function confirmAvatar() {
+ if (!selectedAvatar || !currentUser) return;
+
+ try {
+ await db.collection('users').doc(currentUser.uid).update({
+ avatar: selectedAvatar
+ });
+ userData.avatar = selectedAvatar;
+ updateDashboard();
+ hideAvatarPicker();
+ console.log('&#9989; Avatar updated to:', selectedAvatar);
+ } catch (error) {
+ console.error('Error updating avatar:', error);
+ }
+ }
+
+ // ========================================
+ // ACTIVITY FEED SYSTEM
+ // ========================================
+
+ async function addActivity(type, title, details = {}) {
+ if (!currentUser) return;
+
+ const activity = {
+ type: type, // 'completion', 'achievement', 'milestone', 'practice'
+ title: title,
+ details: details,
+ timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+ id: Date.now().toString()
+ };
+
+ try {
+ await db.collection('users').doc(currentUser.uid).update({
+ activityFeed: firebase.firestore.FieldValue.arrayUnion(activity)
+ });
+ console.log('&#9989; Activity added:', title);
+ } catch (error) {
+ console.error('Error adding activity:', error);
+ }
+ }
+
+ function updateActivityFeed() {
+ if (!userData || !userData.activityFeed) return;
+
+ const activityList = document.querySelector('.activity-list');
+ if (!activityList) return;
+
+ // Clear existing activities
+ activityList.innerHTML = '';
+
+ // Get last 3 activities
+ const recentActivities = userData.activityFeed.slice(-3).reverse();
+
+ if (recentActivities.length === 0) {
+ activityList.innerHTML = '<div style="text-align: center; color: #A0AEC0; padding: 1rem;">No recent activity yet. Start learning to see your progress here!</div>';
+ return;
+ }
+
+ recentActivities.forEach(activity => {
+ const activityItem = createActivityItem(activity);
+ activityList.appendChild(activityItem);
+ });
+ }
+
+ function createActivityItem(activity) {
+ const div = document.createElement('div');
+ div.className = 'activity-item';
+
+ const iconMap = {
+ 'completion': { emoji: '&#127881;', color: 'linear-gradient(135deg, #FC8181, #F6AD55)' },
+ 'achievement': { emoji: '&#127942;', color: 'linear-gradient(135deg, #667EEA, #764BA2)' },
+ 'milestone': { emoji: '&#11088;', color: 'linear-gradient(135deg, #F6AD55, #FBD38D)' },
+ 'practice': { emoji: '&#128221;', color: 'linear-gradient(135deg, #48BB78, #38B2AC)' }
+ };
+
+ const config = iconMap[activity.type] || iconMap['practice'];
+
+ div.innerHTML = `
+ <div class="activity-icon" style="background: ${config.color};">
+ ${config.emoji}
+ </div>
+ <div class="activity-content">
+ <div class="activity-title">${activity.title}</div>
+ <div class="activity-time">${getTimeAgo(activity.timestamp)}</div>
+ </div>
+ `;
+
+ return div;
+ }
+
+ function getTimeAgo(timestamp) {
+ if (!timestamp || !timestamp.toDate) return 'Just now';
+
+ const now = new Date();
+ const activityTime = timestamp.toDate();
+ const diffMs = now - activityTime;
+ const diffMins = Math.floor(diffMs / 60000);
+ const diffHours = Math.floor(diffMs / 3600000);
+ const diffDays = Math.floor(diffMs / 86400000);
+
+ if (diffMins < 1) return 'Just now';
+ if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+ if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+ if (diffDays === 1) return 'Yesterday';
+ if (diffDays < 7) return `${diffDays} days ago`;
+ return activityTime.toLocaleDateString();
+ }
+
+ // ========================================
+ // STREAK CALCULATION
+ // ========================================
+
+ async function updateStreak() {
+ if (!currentUser) return;
+
+ try {
+ const userDoc = await db.collection('users').doc(currentUser.uid).get();
+ if (!userDoc.exists) return;
+
+ const data = userDoc.data();
+ const lastLogin = data.lastLogin ? data.lastLogin.toDate() : null;
+ const now = new Date();
+
+ let newStreak = data.stats?.streak || 0;
+
+ if (lastLogin) {
+ const diffDays = Math.floor((now - lastLogin) / 86400000);
+
+ if (diffDays === 0) {
+ // Same day, keep streak
+ return;
+ } else if (diffDays === 1) {
+ // Consecutive day, increment streak
+ newStreak++;
+ } else {
+ // Streak broken, reset to 1
+ newStreak = 1;
+ }
+ } else {
+ // First login
+ newStreak = 1;
+ }
+
+ // Update in Firebase
+ await db.collection('users').doc(currentUser.uid).update({
+ lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+ 'stats.streak': newStreak
+ });
+
+ if (userData) {
+ userData.stats.streak = newStreak;
+ updateDashboard();
+ }
+
+ console.log(`&#128293; Streak updated: ${newStreak} days`);
+ } catch (error) {
+ console.error('Error updating streak:', error);
+ }
  }
 
  // Load demo data for non-authenticated users
@@ -1837,6 +2095,9 @@
  const avatar = document.getElementById('user-avatar');
  if (avatar) {
  avatar.textContent = userData.avatar || '&#127912;';
+ avatar.style.cursor = 'pointer';
+ avatar.title = 'Click to change avatar';
+ avatar.onclick = showAvatarPicker;
  }
 
  // Update stats
@@ -1896,6 +2157,9 @@
 
  // Update achievements
  updateAchievementBadges();
+
+ // Update activity feed
+ updateActivityFeed();
  }
 
  // Format time in hours
@@ -2144,12 +2408,42 @@
  console.log('&#9989; All authentication event listeners setup complete');
  }
 
+ // Setup avatar picker event listeners
+ function setupAvatarPickerListeners() {
+ console.log('&#128295; Setting up avatar picker listeners...');
+
+ const avatarConfirmBtn = document.getElementById('avatar-confirm-btn');
+ if (avatarConfirmBtn) {
+ avatarConfirmBtn.addEventListener('click', function(e) {
+ e.preventDefault();
+ console.log('&#128280; Avatar confirm button clicked');
+ confirmAvatar();
+ });
+ console.log('&#9989; Avatar confirm button listener attached');
+ }
+
+ const avatarSkipBtn = document.getElementById('avatar-skip-btn');
+ if (avatarSkipBtn) {
+ avatarSkipBtn.addEventListener('click', function(e) {
+ e.preventDefault();
+ console.log('&#128280; Avatar skip button clicked');
+ hideAvatarPicker();
+ });
+ console.log('&#9989; Avatar skip button listener attached');
+ }
+
+ console.log('&#9989; Avatar picker listeners setup complete');
+ }
+
  // Initialize dashboard when page loads
  window.addEventListener('load', function() {
  console.log('&#128640; Initializing dashboard...');
 
  // Setup authentication event listeners FIRST
  setupAuthEventListeners();
+
+ // Setup avatar picker listeners
+ setupAvatarPickerListeners();
 
  // Initialize Firebase auth
  initAuth();
@@ -2163,14 +2457,17 @@
  console.log('&#9989; Dashboard initialized');
  });
 
- // Expose utility functions for debugging
+ // Expose utility functions for apps and debugging
  window.MiaHomeDashboard = {
  userData: () => userData,
  currentUser: () => currentUser,
  updateUserStats,
  updateModuleProgress,
  addAchievement,
- updateDashboard
+ updateDashboard,
+ addActivity, // Apps can track activities
+ showAvatarPicker, // Apps can trigger avatar picker
+ updateStreak // Apps can update streak
  };
  </script>
 

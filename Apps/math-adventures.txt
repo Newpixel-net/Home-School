@@ -441,6 +441,9 @@ correctAnswers: 0,
 wrongAnswers: 0
 };
 
+// Emoji helper - creates emojis from Unicode to prevent page builder encoding
+this.e = (code) => String.fromCodePoint(code);
+
 // Load saved progress
 this.loadProgress();
 this.init();
@@ -501,7 +504,7 @@ generateCountingQuestion() {
 const count = Math.floor(Math.random() * 10) + 1;
 this.correctAnswer = count;
 
-const emojis = ['🍎', '⭐', '🎈', '🍀', '🦋', '🐝', '🍋', '🌈'];
+const emojis = [this.e(0x1F34E), this.e(0x2B50), this.e(0x1F388), this.e(0x1F340), this.e(0x1F98B), this.e(0x1F41D), this.e(0x1F34B), this.e(0x1F308)];
 const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 
 document.getElementById('question').textContent = 'How many do you see?';
@@ -526,7 +529,7 @@ this.correctAnswer = num1 + num2;
 
 document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
 
-const emojis = ['🍎', '⭐', '🎈', '🍀'];
+const emojis = [this.e(0x1F34E), this.e(0x2B50), this.e(0x1F388), this.e(0x1F340)];
 const emoji1 = emojis[Math.floor(Math.random() * emojis.length)];
 const emoji2 = emojis[Math.floor(Math.random() * emojis.length)];
 
@@ -565,7 +568,7 @@ this.correctAnswer = num1 - num2;
 
 document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
 
-const emojis = ['🍎', '⭐', '🎈', '🍀'];
+const emojis = [this.e(0x1F34E), this.e(0x2B50), this.e(0x1F388), this.e(0x1F340)];
 const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 
 const visualObjects = document.getElementById('visual-objects');
@@ -643,7 +646,7 @@ const feedback = document.getElementById('feedback');
 if (answer == this.correctAnswer) {
 this.stats.correctAnswers++;
 button.classList.add('correct');
-feedback.textContent = '✓ Excellent!';
+feedback.textContent = this.e(0x2713) + ' Excellent!';
 feedback.className = 'feedback correct';
 
 // Track correct answer
@@ -658,7 +661,7 @@ this.showCelebration();
 } else {
 this.stats.wrongAnswers++;
 button.classList.add('wrong');
-feedback.textContent = '✗ Try again!';
+feedback.textContent = this.e(0x2717) + ' Try again!';
 feedback.className = 'feedback wrong';
 
 // Track wrong answer
@@ -682,11 +685,11 @@ this.saveProgress();
 
 showCelebration() {
 const messages = [
-"You're a math star! ⭐",
-"Incredible work! 🎉",
-"You're amazing! 🌟",
-"Perfect! Keep it up! 🎈",
-"Brilliant! 🌈"
+"You're a math star! " + this.e(0x2B50),
+"Incredible work! " + this.e(0x1F389),
+"You're amazing! " + this.e(0x1F31F),
+"Perfect! Keep it up! " + this.e(0x1F388),
+"Brilliant! " + this.e(0x1F308)
 ];
 
 document.getElementById('celebration-message').textContent =
@@ -734,7 +737,7 @@ this.stats = JSON.parse(saved);
 let mathGame;
 window.addEventListener('load', () => {
 mathGame = new MathAdventures();
-console.log('🔢 Math Adventures loaded successfully!');
+console.log(String.fromCodePoint(0x1F522) + ' Math Adventures loaded successfully!');
 });
 
 // Set up next question button

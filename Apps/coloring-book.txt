@@ -780,7 +780,39 @@ class ColoringBookEnhanced {
       console.log('✅ Drawing saved successfully!');
     } catch (error) {
       console.error('❌ Error saving drawing:', error);
-      alert('Failed to save drawing. Please try again.');
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+
+      let errorMessage = 'Failed to save drawing.\n\n';
+
+      // Provide specific error messages based on error code
+      if (error.code === 'storage/unauthorized') {
+        errorMessage += '🔒 Permission denied: Firebase Storage rules may need to be updated.\n\n';
+        errorMessage += 'Please check that Storage rules allow writes to:\n';
+        errorMessage += `users/{userId}/coloring/{drawingId}.png\n\n`;
+        errorMessage += 'Suggested rule:\n';
+        errorMessage += 'allow write: if request.auth != null && request.auth.uid == userId;';
+      } else if (error.code === 'permission-denied') {
+        errorMessage += '🔒 Permission denied: Firestore rules may need to be updated.\n\n';
+        errorMessage += 'Please check that Firestore rules allow writes to:\n';
+        errorMessage += 'users/{userId}/coloringArt/{drawingId}\n\n';
+        errorMessage += 'Suggested rule:\n';
+        errorMessage += 'allow write: if request.auth != null && request.auth.uid == userId;';
+      } else if (error.code === 'storage/quota-exceeded') {
+        errorMessage += '💾 Storage quota exceeded. Please upgrade your Firebase plan or delete some old artworks.';
+      } else if (error.code === 'unavailable' || error.message.includes('network')) {
+        errorMessage += '🌐 Network error: Please check your internet connection and try again.';
+      } else if (error.code === 'unauthenticated') {
+        errorMessage += '🔑 Not authenticated: Please sign out and sign back in.';
+      } else {
+        errorMessage += `Error: ${error.message}\n\n`;
+        errorMessage += 'Please check:\n';
+        errorMessage += '• Firebase Storage rules allow authenticated users to write\n';
+        errorMessage += '• Firestore rules allow authenticated users to write\n';
+        errorMessage += '• Your internet connection is stable';
+      }
+
+      alert(errorMessage);
       this.hideAutoSaveStatus();
     }
   }
@@ -807,7 +839,12 @@ class ColoringBookEnhanced {
 
       this.showAutoSaveStatus('saved');
     } catch (error) {
-      console.error('Auto-save error:', error);
+      console.error('❌ Auto-save error:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+
+      // Don't show alert for auto-save errors, just hide the status
+      // User will see the error when they manually save
       this.hideAutoSaveStatus();
     }
   }
@@ -850,7 +887,17 @@ class ColoringBookEnhanced {
 
       console.log(`🖼️ Loaded ${this.gallery.length} artworks`);
     } catch (error) {
-      console.error('Error loading gallery:', error);
+      console.error('❌ Error loading gallery:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+
+      // Set empty gallery on error
+      this.gallery = [];
+
+      // Show user-friendly error if it's a permissions issue
+      if (error.code === 'permission-denied') {
+        console.error('🔒 Firestore permission denied - check security rules');
+      }
     }
   }
 
@@ -951,8 +998,34 @@ class ColoringBookEnhanced {
 
       console.log('✅ Drawing deleted');
     } catch (error) {
-      console.error('Error deleting drawing:', error);
-      alert('Failed to delete drawing. Please try again.');
+      console.error('❌ Error deleting drawing:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+
+      let errorMessage = 'Failed to delete drawing.\n\n';
+
+      if (error.code === 'storage/object-not-found') {
+        errorMessage += '⚠️ Image file not found in storage (already deleted?)\nRemoving from database...';
+        // Try to delete just the database entry
+        try {
+          await db.collection('users')
+            .doc(this.currentUser.uid)
+            .collection('coloringArt')
+            .doc(drawingId)
+            .delete();
+          await this.loadUserGallery();
+          this.showGallery();
+          return;
+        } catch (dbError) {
+          errorMessage += '\n\nCould not remove from database either: ' + dbError.message;
+        }
+      } else if (error.code === 'permission-denied' || error.code === 'storage/unauthorized') {
+        errorMessage += '🔒 Permission denied. Please check Firebase rules.';
+      } else {
+        errorMessage += error.message;
+      }
+
+      alert(errorMessage);
     }
   }
 

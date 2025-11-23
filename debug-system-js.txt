@@ -19,7 +19,7 @@ class MiaDebug {
 
  static success(category, message, data) {
  console.log(
- `%c&#10003; [${category}]%c ${message}`,
+ `%c✓ [${category}]%c ${message}`,
  'background: #00B894; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;',
  'color: #2C3E50;',
  data || ''
@@ -46,5 +46,5 @@ class MiaDebug {
 }
 
 window.MiaDebug = MiaDebug;
-console.log('&#9989; Debug system loaded');
+console.log('✅ Debug system loaded');
 </script>

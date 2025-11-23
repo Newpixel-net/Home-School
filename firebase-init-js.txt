@@ -50,5 +50,5 @@ class FirebaseManager {
 }
 
 window.firebaseManager = new FirebaseManager();
-console.log('&#9989; Firebase manager loaded');
+console.log('✅ Firebase manager loaded');
 </script>

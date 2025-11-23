@@ -422,34 +422,34 @@
  this.currentStep = 0;
 
  this.starters = [
- { id: 1, emoji: '&#127775;', text: 'Once upon a time, in a magical land far away...' },
- { id: 2, emoji: '&#128640;', text: 'On a bright sunny morning, something amazing happened...' },
- { id: 3, emoji: '&#129464;', text: 'There once was a brave hero who...' },
- { id: 4, emoji: '&#127917;', text: 'Long ago, when magic filled the world...' },
- { id: 5, emoji: '&#127752;', text: 'In a world where anything is possible...' },
- { id: 6, emoji: '&#127914;', text: 'One extraordinary day...' }
+ { id: 1, emoji: '🌟', text: 'Once upon a time, in a magical land far away...' },
+ { id: 2, emoji: '🚀', text: 'On a bright sunny morning, something amazing happened...' },
+ { id: 3, emoji: '🦸', text: 'There once was a brave hero who...' },
+ { id: 4, emoji: '🎭', text: 'Long ago, when magic filled the world...' },
+ { id: 5, emoji: '🌈', text: 'In a world where anything is possible...' },
+ { id: 6, emoji: '🎪', text: 'One extraordinary day...' }
  ];
 
  this.characters = [
- { id: 1, emoji: '&#129409;', name: 'Brave Lion' },
- { id: 2, emoji: '&#129412;', name: 'Magic Unicorn' },
- { id: 3, emoji: '&#129497;', name: 'Wise Wizard' },
- { id: 4, emoji: '&#128120;', name: 'Kind Princess' },
- { id: 5, emoji: '&#129302;', name: 'Friendly Robot' },
- { id: 6, emoji: '&#128009;', name: 'Gentle Dragon' },
- { id: 7, emoji: '&#129498;', name: 'Tiny Fairy' },
- { id: 8, emoji: '&#129464;', name: 'Super Hero' }
+ { id: 1, emoji: '🦁', name: 'Brave Lion' },
+ { id: 2, emoji: '🦄', name: 'Magic Unicorn' },
+ { id: 3, emoji: '🧙', name: 'Wise Wizard' },
+ { id: 4, emoji: '👸', name: 'Kind Princess' },
+ { id: 5, emoji: '🤖', name: 'Friendly Robot' },
+ { id: 6, emoji: '🐉', name: 'Gentle Dragon' },
+ { id: 7, emoji: '🧚', name: 'Tiny Fairy' },
+ { id: 8, emoji: '🦸', name: 'Super Hero' }
  ];
 
  this.settings = [
- { id: 1, emoji: '&#127984;', name: 'Magical Castle' },
- { id: 2, emoji: '&#127794;', name: 'Enchanted Forest' },
- { id: 3, emoji: '&#127965;&#65039;', name: 'Treasure Island' },
- { id: 4, emoji: '&#127747;', name: 'Big City' },
- { id: 5, emoji: '&#129680;', name: 'Outer Space' },
- { id: 6, emoji: '&#127956;&#65039;', name: 'High Mountains' },
- { id: 7, emoji: '&#127754;', name: 'Under the Sea' },
- { id: 8, emoji: '&#127914;', name: 'Circus' }
+ { id: 1, emoji: '🏰', name: 'Magical Castle' },
+ { id: 2, emoji: '🌲', name: 'Enchanted Forest' },
+ { id: 3, emoji: '🏝️', name: 'Treasure Island' },
+ { id: 4, emoji: '🌃', name: 'Big City' },
+ { id: 5, emoji: '🛰', name: 'Outer Space' },
+ { id: 6, emoji: '🏔️', name: 'High Mountains' },
+ { id: 7, emoji: '🌊', name: 'Under the Sea' },
+ { id: 8, emoji: '🎪', name: 'Circus' }
  ];
 
  analytics.logEvent('page_view', {
@@ -514,7 +514,7 @@
  const area = document.getElementById('story-area');
  area.innerHTML = `
  <div class="step-indicator">
- <div class="step completed">&#10003;</div>
+ <div class="step completed">✓</div>
  <div class="step active">2</div>
  <div class="step">3</div>
  <div class="step">4</div>
@@ -548,8 +548,8 @@
  const area = document.getElementById('story-area');
  area.innerHTML = `
  <div class="step-indicator">
- <div class="step completed">&#10003;</div>
- <div class="step completed">&#10003;</div>
+ <div class="step completed">✓</div>
+ <div class="step completed">✓</div>
  <div class="step active">3</div>
  <div class="step">4</div>
  </div>
@@ -582,16 +582,16 @@
  const area = document.getElementById('story-area');
  area.innerHTML = `
  <div class="step-indicator">
- <div class="step completed">&#10003;</div>
- <div class="step completed">&#10003;</div>
- <div class="step completed">&#10003;</div>
+ <div class="step completed">✓</div>
+ <div class="step completed">✓</div>
+ <div class="step completed">✓</div>
  <div class="step active">4</div>
  </div>
  <h2 style="text-align: center; color: #2D3748; margin-bottom: 20px;">Write Your Story!</h2>
 
  <div class="story-meta">
  <div class="story-meta-item">
- <span>&#128221; Story Starter:</span>
+ <span>📝 Story Starter:</span>
  <span>${this.currentStory.starter.text}</span>
  </div>
  <div class="story-meta-item">
@@ -616,7 +616,7 @@
 
  <div class="action-buttons">
  <button class="btn btn-secondary" onclick="storyCreator.backToMenu()">Cancel</button>
- <button class="btn btn-primary" onclick="storyCreator.saveStory()">Save Story &#128190;</button>
+ <button class="btn btn-primary" onclick="storyCreator.saveStory()">Save Story 💾</button>
  </div>
  `;
 
@@ -660,7 +660,7 @@
  setting: this.currentStory.setting.name
  });
 
- alert('&#128218; Your story has been saved!');
+ alert('📚 Your story has been saved!');
  this.showMyStories();
  }
 
@@ -672,11 +672,11 @@
  if (stories.length === 0) {
  area.innerHTML = `
  <div class="empty-state">
- <div class="icon">&#128214;</div>
+ <div class="icon">📖</div>
  <h2>No Stories Yet</h2>
  <p>Start creating your first amazing story!</p>
  <button class="btn btn-primary" onclick="storyCreator.startNewStory()" style="margin-top: 20px;">
- Create Story &#9997;&#65039;
+ Create Story ✍️
  </button>
  </div>
  `;
@@ -688,7 +688,7 @@
  <div class="story-list" id="story-list"></div>
  <div class="action-buttons">
  <button class="btn btn-secondary" onclick="storyCreator.backToMenu()">Back</button>
- <button class="btn btn-primary" onclick="storyCreator.startNewStory()">New Story &#9997;&#65039;</button>
+ <button class="btn btn-primary" onclick="storyCreator.startNewStory()">New Story ✍️</button>
  </div>
  `;
 
@@ -725,7 +725,7 @@
 
  <div class="story-meta">
  <div class="story-meta-item">
- <span>&#128221; Story Starter:</span>
+ <span>📝 Story Starter:</span>
  <span>${story.starter.text}</span>
  </div>
  <div class="story-meta-item">
@@ -737,11 +737,11 @@
  <span>${story.setting.emoji} ${story.setting.name}</span>
  </div>
  <div class="story-meta-item">
- <span>&#128197; Written:</span>
+ <span>📅 Written:</span>
  <span>${new Date(story.date).toLocaleDateString()}</span>
  </div>
  <div class="story-meta-item">
- <span>&#128202; Word Count:</span>
+ <span>📊 Word Count:</span>
  <span>${story.wordCount} words</span>
  </div>
  </div>
@@ -782,7 +782,7 @@
  let storyCreator;
  window.addEventListener('load', () => {
  storyCreator = new StoryCreator();
- console.log('&#128214; Story Creator loaded successfully!');
+ console.log('📖 Story Creator loaded successfully!');
  });
  </script>
 

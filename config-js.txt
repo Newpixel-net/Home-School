@@ -31,5 +31,5 @@ const appConfig = {
 window.firebaseConfig = firebaseConfig;
 window.appConfig = appConfig;
 
-console.log('&#9989; Config loaded');
+console.log('✅ Config loaded');
 </script>

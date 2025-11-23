@@ -383,13 +383,13 @@
 
  this.topics = {
  animals: {
- icon: '&#129409;',
+ icon: '🦁',
  title: 'Animals',
  facts: [
- { emoji: '&#128024;', title: 'Elephant Memory', text: 'Elephants have amazing memories and can remember other elephants for years!' },
- { emoji: '&#129426;', title: 'Giraffe Height', text: 'Giraffes are the tallest animals on Earth. Their necks alone can be 6 feet long!' },
- { emoji: '&#128044;', title: 'Dolphin Intelligence', text: 'Dolphins are very smart! They can recognize themselves in mirrors and use tools.' },
- { emoji: '&#129419;', title: 'Butterfly Life', text: 'Butterflies taste with their feet! They stand on their food to taste it.' }
+ { emoji: '🐘', title: 'Elephant Memory', text: 'Elephants have amazing memories and can remember other elephants for years!' },
+ { emoji: '🦒', title: 'Giraffe Height', text: 'Giraffes are the tallest animals on Earth. Their necks alone can be 6 feet long!' },
+ { emoji: '🐬', title: 'Dolphin Intelligence', text: 'Dolphins are very smart! They can recognize themselves in mirrors and use tools.' },
+ { emoji: '🦋', title: 'Butterfly Life', text: 'Butterflies taste with their feet! They stand on their food to taste it.' }
  ],
  quiz: [
  { question: 'What is the tallest animal on Earth?', options: ['Elephant', 'Giraffe', 'Bear', 'Lion'], correct: 1 },
@@ -397,13 +397,13 @@
  ]
  },
  space: {
- icon: '&#128640;',
+ icon: '🚀',
  title: 'Space',
  facts: [
- { emoji: '&#9728;&#65039;', title: 'The Sun', text: 'The Sun is a star! It\'s so big that over 1 million Earths could fit inside it!' },
- { emoji: '&#127769;', title: 'The Moon', text: 'The Moon has no air or water. Footprints left by astronauts will stay there forever!' },
- { emoji: '&#11088;', title: 'Stars', text: 'Stars are giant balls of hot gas. They twinkle because of Earth\'s atmosphere!' },
- { emoji: '&#129680;', title: 'Saturn', text: 'Saturn has beautiful rings made of ice and rock. It could float in water!' }
+ { emoji: '☀️', title: 'The Sun', text: 'The Sun is a star! It\'s so big that over 1 million Earths could fit inside it!' },
+ { emoji: '🌙', title: 'The Moon', text: 'The Moon has no air or water. Footprints left by astronauts will stay there forever!' },
+ { emoji: '⭐', title: 'Stars', text: 'Stars are giant balls of hot gas. They twinkle because of Earth\'s atmosphere!' },
+ { emoji: '🪐', title: 'Saturn', text: 'Saturn has beautiful rings made of ice and rock. It could float in water!' }
  ],
  quiz: [
  { question: 'What is the Sun?', options: ['A planet', 'A star', 'A moon', 'A comet'], correct: 1 },
@@ -411,13 +411,13 @@
  ]
  },
  plants: {
- icon: '&#127793;',
+ icon: '🌱',
  title: 'Plants',
  facts: [
- { emoji: '&#127795;', title: 'Trees & Oxygen', text: 'Trees make oxygen for us to breathe! One tree can make enough oxygen for 2 people!' },
- { emoji: '&#127803;', title: 'Sunflowers', text: 'Sunflowers turn to face the sun as it moves across the sky!' },
- { emoji: '&#127797;', title: 'Cacti', text: 'Cacti store water in their thick stems. They can survive months without rain!' },
- { emoji: '&#127802;', title: 'Flowers', text: 'Flowers have bright colors and sweet smells to attract bees and butterflies!' }
+ { emoji: '🌳', title: 'Trees & Oxygen', text: 'Trees make oxygen for us to breathe! One tree can make enough oxygen for 2 people!' },
+ { emoji: '🌻', title: 'Sunflowers', text: 'Sunflowers turn to face the sun as it moves across the sky!' },
+ { emoji: '🌵', title: 'Cacti', text: 'Cacti store water in their thick stems. They can survive months without rain!' },
+ { emoji: '🌺', title: 'Flowers', text: 'Flowers have bright colors and sweet smells to attract bees and butterflies!' }
  ],
  quiz: [
  { question: 'What do trees make for us to breathe?', options: ['Carbon dioxide', 'Oxygen', 'Nitrogen', 'Water'], correct: 1 },
@@ -425,13 +425,13 @@
  ]
  },
  weather: {
- icon: '&#127752;',
+ icon: '🍰',
  title: 'Weather',
  facts: [
- { emoji: '&#9889;', title: 'Lightning', text: 'Lightning is electricity in the sky! It\'s hotter than the surface of the Sun!' },
- { emoji: '&#127752;', title: 'Rainbows', text: 'Rainbows happen when sunlight shines through rain droplets. They have 7 colors!' },
- { emoji: '&#10052;&#65039;', title: 'Snowflakes', text: 'Every snowflake is unique! No two snowflakes are exactly the same!' },
- { emoji: '&#9729;&#65039;', title: 'Clouds', text: 'Clouds are made of tiny water droplets floating in the air!' }
+ { emoji: '⚡', title: 'Lightning', text: 'Lightning is electricity in the sky! It\'s hotter than the surface of the Sun!' },
+ { emoji: '🌈', title: 'Rainbows', text: 'Rainbows happen when sunlight shines through rain droplets. They have 7 colors!' },
+ { emoji: '❄️', title: 'Snowflakes', text: 'Every snowflake is unique! No two snowflakes are exactly the same!' },
+ { emoji: '☁️', title: 'Clouds', text: 'Clouds are made of tiny water droplets floating in the air!' }
  ],
  quiz: [
  { question: 'How many colors does a rainbow have?', options: ['5', '6', '7', '8'], correct: 2 },
@@ -439,13 +439,13 @@
  ]
  },
  body: {
- icon: '&#129728;',
+ icon: '🩺',
  title: 'Human Body',
  facts: [
- { emoji: '&#128147;', title: 'Your Heart', text: 'Your heart beats about 100,000 times every day! It pumps blood through your body!' },
- { emoji: '&#129504;', title: 'Your Brain', text: 'Your brain is the control center of your body. It helps you think, move, and feel!' },
- { emoji: '&#129460;', title: 'Your Bones', text: 'You have 206 bones in your body! They protect your organs and help you move!' },
- { emoji: '&#128064;', title: 'Your Eyes', text: 'Your eyes can see millions of colors! They work like cameras to capture images!' }
+ { emoji: '💓', title: 'Your Heart', text: 'Your heart beats about 100,000 times every day! It pumps blood through your body!' },
+ { emoji: '🧠', title: 'Your Brain', text: 'Your brain is the control center of your body. It helps you think, move, and feel!' },
+ { emoji: '🦴', title: 'Your Bones', text: 'You have 206 bones in your body! They protect your organs and help you move!' },
+ { emoji: '👀', title: 'Your Eyes', text: 'Your eyes can see millions of colors! They work like cameras to capture images!' }
  ],
  quiz: [
  { question: 'How many times does your heart beat every day?', options: ['1,000', '10,000', '100,000', '1,000,000'], correct: 2 },
@@ -453,13 +453,13 @@
  ]
  },
  experiments: {
- icon: '&#9879;&#65039;',
+ icon: '⚗️',
  title: 'Experiments',
  facts: [
- { emoji: '&#127880;', title: 'Air Pressure', text: 'Air pushes on everything! That\'s why balloons inflate and why you can drink through a straw!' },
- { emoji: '&#129522;', title: 'Magnets', text: 'Magnets can push and pull without touching! They attract iron and steel!' },
- { emoji: '&#128161;', title: 'Electricity', text: 'Electricity flows through wires to power lights, computers, and toys!' },
- { emoji: '&#127754;', title: 'Water', text: 'Water can be solid (ice), liquid (water), or gas (steam)! It changes with temperature!' }
+ { emoji: '🎈', title: 'Air Pressure', text: 'Air pushes on everything! That\'s why balloons inflate and why you can drink through a straw!' },
+ { emoji: '🧲', title: 'Magnets', text: 'Magnets can push and pull without touching! They attract iron and steel!' },
+ { emoji: '💡', title: 'Electricity', text: 'Electricity flows through wires to power lights, computers, and toys!' },
+ { emoji: '💧', title: 'Water', text: 'Water can be solid (ice), liquid (water), or gas (steam)! It changes with temperature!' }
  ],
  quiz: [
  { question: 'What do magnets attract?', options: ['Wood', 'Iron and steel', 'Plastic', 'Paper'], correct: 1 },
@@ -631,7 +631,7 @@
  let scienceExplorer;
  window.addEventListener('load', () => {
  scienceExplorer = new ScienceExplorer();
- console.log('&#128300; Science Explorer loaded successfully!');
+ console.log('🔬 Science Explorer loaded successfully!');
  });
  </script>
 

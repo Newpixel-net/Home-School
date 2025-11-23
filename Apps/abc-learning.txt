@@ -1,11 +1,14 @@
 
 
 
- <meta>
- <meta name="viewport">
- <title>🔤 ABC Learning - Mia's Home School</title>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔤 ABC Learning - Mia's Home School</title>
 
- <!-- Firebase SDK -->
+<!-- Firebase SDK -->
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -249,9 +252,10 @@
  }
  }
  </style>
+</head>
 
-
- <div class="header">
+<body>
+<div class="header">
  <h1>🔤 ABC Learning</h1>
  <div style="display: flex; align-items: center; gap: 15px;">
  <span class="progress-badge" id="progress-badge">Progress: 0/26</span>
@@ -505,3 +509,5 @@
  });
  </script>
 
+</body>
+</html>

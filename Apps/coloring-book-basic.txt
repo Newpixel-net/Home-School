@@ -1,11 +1,14 @@
 
 
 
- <meta>
- <meta name="viewport">
- <title>🎨 Coloring Book - Mia's Home School</title>
-a
- <!-- Firebase SDK -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎨 Coloring Book - Mia's Home School</title>
+
+<!-- Firebase SDK -->
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -182,9 +185,10 @@ a
  }
  }
  </style>
+</head>
 
-
- <div class="header">
+<body>
+<div class="header">
  <h1>🎨 Coloring Book</h1>
  <div>
  <button class="btn btn-back">← Back</button>
@@ -444,3 +448,5 @@ a
  });
  </script>
 
+</body>
+</html>

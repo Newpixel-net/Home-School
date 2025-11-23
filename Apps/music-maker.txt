@@ -427,21 +427,21 @@
  ];
 
  this.drums = [
- { name: 'Kick', emoji: '&#129406;', key: 'A' },
- { name: 'Snare', emoji: '&#127919;', key: 'S' },
- { name: 'Hi-Hat', emoji: '&#127913;', key: 'D' },
- { name: 'Tom', emoji: '&#127914;', key: 'F' },
- { name: 'Crash', emoji: '&#128165;', key: 'G' },
- { name: 'Clap', emoji: '&#128079;', key: 'H' }
+ { name: 'Kick', emoji: '🥁', key: 'A' },
+ { name: 'Snare', emoji: '🥁', key: 'S' },
+ { name: 'Hi-Hat', emoji: '🥁', key: 'D' },
+ { name: 'Tom', emoji: '🥁', key: 'F' },
+ { name: 'Crash', emoji: '💥', key: 'G' },
+ { name: 'Clap', emoji: '👏', key: 'H' }
  ];
 
  this.soundEffects = [
- { name: 'Beep', emoji: '&#128226;' },
- { name: 'Boop', emoji: '&#128276;' },
- { name: 'Whoosh', emoji: '&#128168;' },
- { name: 'Pop', emoji: '&#127880;' },
- { name: 'Ding', emoji: '&#10024;' },
- { name: 'Buzz', emoji: '&#128029;' }
+ { name: 'Beep', emoji: '📢' },
+ { name: 'Boop', emoji: '🔔' },
+ { name: 'Whoosh', emoji: '💨' },
+ { name: 'Pop', emoji: '🎈' },
+ { name: 'Ding', emoji: '✨' },
+ { name: 'Buzz', emoji: '🐝' }
  ];
 
  this.init();
@@ -603,7 +603,7 @@
  oscillator.stop(this.audioContext.currentTime + 1);
 
  element.classList.add('playing');
- this.createNoteAnimation(element, '&#127925;');
+ this.createNoteAnimation(element, '🎵');
 
  setTimeout(() => element.classList.remove('playing'), 200);
 
@@ -665,7 +665,7 @@
  oscillator.stop(this.audioContext.currentTime + 1);
 
  element.classList.add('playing');
- this.createNoteAnimation(element, '&#129345;');
+ this.createNoteAnimation(element, '🥁');
 
  setTimeout(() => element.classList.remove('playing'), 150);
 
@@ -753,7 +753,7 @@
  let musicMaker;
  window.addEventListener('load', () => {
  musicMaker = new MusicMaker();
- console.log('&#127925; Music Maker loaded successfully!');
+ console.log('🎵 Music Maker loaded successfully!');
  });
  </script>
 

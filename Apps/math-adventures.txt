@@ -500,7 +500,7 @@
  const count = Math.floor(Math.random()  10) + 1;
  this.correctAnswer = count;
 
- const emojis = ['&#127822;', '&#11088;', '&#127880;', '&#127800;', '&#129419;', '&#128029;', '&#127827;', '&#127752;'];
+ const emojis = ['🍎', '⭐', '🎈', '🍀', '🦋', '🐝', '🍓', '🍰'];
  const emoji = emojis[Math.floor(Math.random()  emojis.length)];
 
  document.getElementById('question').textContent = 'How many do you see';
@@ -525,7 +525,7 @@
 
  document.getElementById('question').textContent = `${num1} + ${num2} = `;
 
- const emojis = ['&#127822;', '&#11088;', '&#127880;', '&#127800;'];
+ const emojis = ['🍎', '⭐', '🎈', '🍀'];
  const emoji1 = emojis[Math.floor(Math.random()  emojis.length)];
  const emoji2 = emojis[Math.floor(Math.random()  emojis.length)];
 
@@ -542,7 +542,7 @@
 
  const plus = document.createElement('div');
  plus.className = 'object';
- plus.textContent = '&#10133;';
+ plus.textContent = '+';
  plus.style.fontSize = '2rem';
  visualObjects.appendChild(plus);
 
@@ -564,7 +564,7 @@
 
  document.getElementById('question').textContent = `${num1} - ${num2} = `;
 
- const emojis = ['&#127822;', '&#11088;', '&#127880;', '&#127800;'];
+ const emojis = ['🍎', '⭐', '🎈', '🍀'];
  const emoji = emojis[Math.floor(Math.random()  emojis.length)];
 
  const visualObjects = document.getElementById('visual-objects');
@@ -642,7 +642,7 @@
  if (answer == this.correctAnswer) {
  this.stats.correctAnswers++;
  button.classList.add('correct');
- feedback.textContent = '&#10003; Excellent!';
+ feedback.textContent = '✓ Excellent!';
  feedback.className = 'feedback correct';
 
   Track correct answer
@@ -657,7 +657,7 @@
  } else {
  this.stats.wrongAnswers++;
  button.classList.add('wrong');
- feedback.textContent = '&#10007; Try again!';
+ feedback.textContent = '✗ Try again!';
  feedback.className = 'feedback wrong';
 
   Track wrong answer
@@ -681,11 +681,11 @@
 
  showCelebration() {
  const messages = [
- You're a math star! &#11088;,
- Incredible work! &#127881;,
- You're amazing! &#127775;,
- Perfect! Keep it up! &#127880;,
- Brilliant! &#127752;
+ You're a math star! ⭐,
+ Incredible work! 🎉,
+ You're amazing! 🌟,
+ Perfect! Keep it up! 🎈,
+ Brilliant! 🍰
  ];
 
  document.getElementById('celebration-message').textContent =
@@ -733,7 +733,7 @@
  let mathGame;
  window.addEventListener('load', () = {
  mathGame = new MathAdventures();
- console.log('&#128290; Math Adventures loaded successfully!');
+ console.log('🔢 Math Adventures loaded successfully!');
  });
  script
 

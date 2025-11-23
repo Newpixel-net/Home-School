@@ -231,7 +231,7 @@ a
  }
 
  init() {
- console.log('&#127912; Coloring Book initializing...');
+ console.log('🎨 Coloring Book initializing...');
 
  // Setup canvas
  this.setupCanvas();
@@ -242,7 +242,7 @@ a
  // Setup event listeners
  this.setupEventListeners();
 
- console.log('&#9989; Coloring Book ready!');
+ console.log('✅ Coloring Book ready!');
  }
 
  setupCanvas() {
@@ -427,7 +427,7 @@ a
  console.log('Drawing saved!');
 
  // Show success message
- alert('&#127881; Your artwork has been saved!');
+ alert('🎉 Your artwork has been saved!');
 
  // Track with Firebase
  if (window.firebaseManager && window.firebaseManager.initialized) {

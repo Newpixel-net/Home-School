@@ -180,7 +180,7 @@
  }
 
  .letter-btn.completed::after {
- content: '&#10003;';
+ content: '✓';
  position: absolute;
  bottom: 2px;
  right: 2px;
@@ -312,7 +312,7 @@
  }
 
  init() {
- console.log('&#128292; ABC Learning initializing...');
+ console.log('🔬 ABC Learning initializing...');
 
  // Generate alphabet grid
  this.generateAlphabetGrid();
@@ -323,7 +323,7 @@
  // Load saved progress
  this.loadProgress();
 
- console.log('&#9989; ABC Learning ready!');
+ console.log('✅ ABC Learning ready!');
  }
 
  generateAlphabetGrid() {
@@ -448,7 +448,7 @@
  // Celebrate completion
  if (count === 26) {
  setTimeout(() => {
- alert('&#127881; Amazing! You\'ve learned all the letters! You\'re a star! &#11088;');
+ alert('🎉 Amazing! You\'ve learned all the letters! You\'re a star! ⭐');
  }, 500);
  }
  }

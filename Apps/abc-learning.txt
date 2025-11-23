@@ -8,10 +8,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🔤 ABC Learning - Mia's Home School</title>
 
-<!-- Firebase SDK -->
+<!-- Firebase SDKs -->
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+
+ <!-- Shared Firebase Configuration -->
+ <script src="../firebase-config.js"></script>
 
  <style>
  * {
@@ -305,6 +310,9 @@
  </div>
 
  <script>
+ // Get Firebase services from shared config
+ const { auth, db, analytics } = window.MiaHomeFirebase;
+
  // ABC Learning Application
  class ABCLearning {
  constructor() {
@@ -424,7 +432,7 @@
  this.markLetterCompleted(letter);
  }
 
- markLetterCompleted(letter) {
+ async markLetterCompleted(letter) {
  if (this.completedLetters.has(letter)) return;
 
  this.completedLetters.add(letter);
@@ -436,20 +444,20 @@
  }
 
  // Update progress
- this.updateProgress();
+ await this.updateProgress();
 
  // Save progress
  this.saveProgress();
 
  // Add activity to dashboard (every 6 letters)
- if (this.completedLetters.size % 6 === 0 && window.parent && window.parent.MiaHomeDashboard) {
- window.parent.MiaHomeDashboard.addActivity('abc-learning', `Practiced Letters A-${letter}`, String.fromCodePoint(0x1F4DA));
+ if (this.completedLetters.size % 6 === 0) {
+ await this.addActivityToFirebase(`Practiced Letters A-${letter}`);
  }
 
  console.log(`Letter ${letter} marked as completed`);
  }
 
- updateProgress() {
+ async updateProgress() {
  const badge = document.getElementById('progress-badge');
  const count = this.completedLetters.size;
  badge.textContent = `Progress: ${count}/26`;
@@ -457,15 +465,13 @@
  // Calculate progress percentage
  const progressPercent = Math.round((count / 26) * 100);
 
- // Sync progress with dashboard
- if (window.parent && window.parent.MiaHomeDashboard) {
- window.parent.MiaHomeDashboard.updateModuleProgress('abc-learning', progressPercent);
- }
+ // Sync progress to Firebase
+ await this.syncProgressToFirebase(progressPercent);
 
  // Celebrate completion
  if (count === 26) {
  setTimeout(() => {
- alert('🎉 Amazing! You\'ve learned all the letters! You\'re a star! ⭐');
+ alert(String.fromCodePoint(0x1F389) + ' Amazing! You\'ve learned all the letters! You\'re a star! ' + String.fromCodePoint(0x2B50));
  }, 500);
  }
  }
@@ -503,6 +509,16 @@
  } catch (error) {
  console.error('Failed to load progress:', error);
  }
+ }
+
+ async syncProgressToFirebase(progressPercent) {
+ // Use shared Firebase helper
+ await window.MiaHomeFirebase.updateModuleProgress('abc-learning', progressPercent);
+ }
+
+ async addActivityToFirebase(title) {
+ // Use shared Firebase helper
+ await window.MiaHomeFirebase.addActivityToFeed('abc-learning', title, String.fromCodePoint(0x1F4DA));
  }
  }
 

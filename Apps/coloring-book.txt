@@ -5,11 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎨 Coloring Book - Mia's Home School</title>
 
-<!-- Firebase SDK -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+
+<!-- Shared Firebase Configuration -->
+<script src="../firebase-config.js"></script>
 
 <style>
 * {
@@ -456,24 +460,8 @@ body {
 </div>
 
 <script>
-// Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k",
-  authDomain: "mia-home-school-513d2.firebaseapp.com",
-  projectId: "mia-home-school-513d2",
-  storageBucket: "mia-home-school-513d2.firebasestorage.app",
-  messagingSenderId: "645973670570",
-  appId: "1:645973670570:web:78782661d182ce9e17aed3",
-  measurementId: "G-6YGP5Z1ZQX"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
-
-console.log('🔥 Firebase initialized');
+// Get Firebase services from shared config
+const { auth, db, storage, analytics } = window.MiaHomeFirebase;
 
 // Enhanced Coloring Book Application
 class ColoringBookEnhanced {
@@ -763,15 +751,12 @@ class ColoringBookEnhanced {
       // Update user stats
       await this.updateUserStats();
 
-      // Track activity in dashboard
-      const dashboard = window.parent?.MiaHomeDashboard || window.MiaHomeDashboard;
-      if (dashboard && dashboard.addActivity) {
-        await dashboard.addActivity(
-          'coloring-book',
-          'Completed Rainbow Drawing',
-          String.fromCodePoint(0x1F3A8)
-        );
-      }
+      // Track activity using shared Firebase helper
+      await window.MiaHomeFirebase.addActivityToFeed(
+        'coloring-book',
+        'Completed Rainbow Drawing',
+        String.fromCodePoint(0x1F3A8)
+      );
 
       // Reload gallery
       await this.loadUserGallery();
@@ -1036,12 +1021,9 @@ class ColoringBookEnhanced {
     try {
       const count = this.gallery.length;
 
-      // Update progress in user profile
-      const dashboard = window.parent?.MiaHomeDashboard || window.MiaHomeDashboard;
-      if (dashboard && dashboard.updateModuleProgress) {
-        const progress = Math.min(100, count * 5); // 5% per artwork, max 100%
-        await dashboard.updateModuleProgress('coloring-book', progress);
-      }
+      // Update progress using shared Firebase helper
+      const progress = Math.min(100, count * 5); // 5% per artwork, max 100%
+      await window.MiaHomeFirebase.updateModuleProgress('coloring-book', progress);
 
       // Check for achievements
       this.checkAchievements(count);
@@ -1057,17 +1039,14 @@ class ColoringBookEnhanced {
   }
 
   async checkAchievements(count) {
-    const dashboard = window.parent?.MiaHomeDashboard || window.MiaHomeDashboard;
-    if (!dashboard || !dashboard.addAchievement) return;
-
     // First artwork
     if (count === 1) {
-      await dashboard.addAchievement('first-artwork');
+      await window.MiaHomeFirebase.addAchievement('first-artwork');
     }
 
     // Creative star (10 artworks)
     if (count === 10) {
-      await dashboard.addAchievement('creative-star');
+      await window.MiaHomeFirebase.addAchievement('creative-star');
     }
   }
 }

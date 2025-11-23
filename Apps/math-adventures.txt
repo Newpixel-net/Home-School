@@ -412,25 +412,19 @@ padding: 20px;
 <button class="next-button">Next Question</button>
 </div>
 
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
-<script>
-// Firebase configuration
-const firebaseConfig = {
-apiKey: "AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k",
-authDomain: "mia-home-school-513d2.firebaseapp.com",
-projectId: "mia-home-school-513d2",
-storageBucket: "mia-home-school-513d2.firebasestorage.app",
-messagingSenderId: "645973670570",
-appId: "1:645973670570:web:78782661d182ce9e17aed3",
-measurementId: "G-6YGP5Z1ZQX"
-};
 
-// Initialize Firebase
-if (!firebase.apps.length) {
-firebase.initializeApp(firebaseConfig);
-}
-const analytics = firebase.analytics();
+<!-- Shared Firebase Configuration -->
+<script src="../firebase-config.js"></script>
+
+<script>
+// Get Firebase services from shared config
+const { auth, db, analytics } = window.MiaHomeFirebase;
 
 class MathAdventures {
 constructor() {
@@ -635,7 +629,7 @@ answersDiv.appendChild(button);
 });
 }
 
-checkAnswer(answer, button) {
+async checkAnswer(answer, button) {
 this.stats.totalQuestions++;
 
 const allButtons = document.querySelectorAll('.answer-button');
@@ -656,8 +650,8 @@ result: 'correct'
 });
 
 // Add activity to dashboard (every 5 correct answers)
-if (this.stats.correctAnswers % 5 === 0 && window.parent && window.parent.MiaHomeDashboard) {
-window.parent.MiaHomeDashboard.addActivity('math-adventures', 'Solved 5 Math Problems', this.e(0x1F522));
+if (this.stats.correctAnswers % 5 === 0) {
+await this.addActivityToFirebase('Solved 5 Math Problems');
 }
 
 setTimeout(() => {
@@ -712,7 +706,7 @@ b.classList.remove('correct', 'wrong');
 this.generateQuestion();
 }
 
-updateStats() {
+async updateStats() {
 document.getElementById('total-questions').textContent = this.stats.totalQuestions;
 document.getElementById('correct-answers').textContent = this.stats.correctAnswers;
 
@@ -725,10 +719,8 @@ const progressFill = document.getElementById('progress-fill');
 progressFill.style.width = accuracy + '%';
 progressFill.textContent = accuracy + '%';
 
-// Sync progress with dashboard
-if (window.parent && window.parent.MiaHomeDashboard) {
-window.parent.MiaHomeDashboard.updateModuleProgress('math-adventures', accuracy);
-}
+// Sync progress to Firebase
+await this.syncProgressToFirebase(accuracy);
 }
 
 saveProgress() {
@@ -740,6 +732,16 @@ const saved = localStorage.getItem('math-adventures-progress');
 if (saved) {
 this.stats = JSON.parse(saved);
 }
+}
+
+async syncProgressToFirebase(accuracy) {
+// Use shared Firebase helper
+await window.MiaHomeFirebase.updateModuleProgress('math-adventures', accuracy);
+}
+
+async addActivityToFirebase(title) {
+// Use shared Firebase helper
+await window.MiaHomeFirebase.addActivityToFeed('math-adventures', title, this.e(0x1F522));
 }
 }
 

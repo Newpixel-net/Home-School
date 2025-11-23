@@ -19,11 +19,42 @@
 - Works in traditional web hosting environments
 
 ### Method B (Page Builder - **WE USE THIS**)
-- **Single standalone HTML files** with everything embedded
-- **All CSS, JavaScript, and Firebase config INLINE in one file**
-- Used in website builder platforms (like Wix, Weebly, custom builders)
-- Main file: `DASHBOARD-STANDALONE.html`
-- Deployed by pasting entire file into page builder's "Custom Code" widget
+
+Method B has **TWO STRATEGIES** that can be used separately or combined:
+
+#### Strategy 1: Standalone Complete HTML Files
+- **Single file with ALL code embedded** (HTML + CSS + JS)
+- Everything in one file that can be pasted into ONE custom code widget
+- Example: `DASHBOARD-STANDALONE.html`
+- **Best for:** Main pages, complete apps, self-contained modules
+- **Benefit:** Easy deployment, one paste operation
+- Links to other pages/apps/files dynamically
+
+#### Strategy 2: Multi-Widget Single Page
+- **ONE page in website builder with MULTIPLE custom code widgets**
+- Split code logically across widgets for better organization:
+  - Widget 1: HTML structure
+  - Widget 2: CSS styles
+  - Widget 3: JavaScript core logic
+  - Widget 4: JavaScript event handlers
+  - Widget 5+: Additional modules as needed
+- **Best for:** Large/complex apps to avoid overloaded files
+- **Benefit:** Easier to maintain, update specific parts, better organization
+- All widgets on same page sync via `window` globals
+
+#### Combining Both Strategies:
+- Dashboard = Standalone file (Strategy 1)
+- Coloring Book app = Multi-widget page (Strategy 2)
+- ABC Learning = Subpage with 3 widgets (Strategy 2)
+- **Everything must sync together through code** via:
+  - `window` object for shared globals
+  - Dynamic script loading from other pages
+  - Firebase for data persistence
+
+#### Additional Flexibility:
+- Can create **subpages** under main pages if needed
+- Can load resources from other pages: `/config-js`, `/firebase-init-js`, etc.
+- Choose the best strategy based on complexity and maintenance needs
 
 ---
 

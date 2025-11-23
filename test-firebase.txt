@@ -180,8 +180,8 @@
  statusEl.textContent = {
  'pending': 'Pending',
  'testing': 'Testing...',
- 'success': 'Success &#10003;',
- 'error': 'Error &#10007;'
+ 'success': 'Success ✓',
+ 'error': 'Error ✗'
  }[status];
 
  detailEl.textContent = message;
@@ -194,7 +194,7 @@
  }
 
  async function runTests() {
- console.log('&#128293; Button clicked! Starting tests...');
+ console.log('🔥 Button clicked! Starting tests...');
 
  const btn = document.getElementById('test-btn-text');
  btn.innerHTML = '<span class="loading"></span>';
@@ -212,7 +212,7 @@
 
  testResults.sdk = true;
  updateStatus('sdk', 'success', `Firebase SDK version: ${firebase.SDK_VERSION || '9.22.0'}`);
- console.log('&#10003; Firebase SDK loaded');
+ console.log('✓ Firebase SDK loaded');
 
  // Test 1: Firebase App Initialization
  updateStatus('app', 'testing', 'Initializing Firebase...');
@@ -221,7 +221,7 @@
  const app = firebase.initializeApp(window.firebaseConfig);
  testResults.app = true;
  updateStatus('app', 'success', `Project ID: ${app.options.projectId}`);
- console.log('&#10003; Firebase App initialized');
+ console.log('✓ Firebase App initialized');
 
  // Test 2: Authentication
  updateStatus('auth', 'testing', 'Checking Authentication...');
@@ -230,7 +230,7 @@
  const auth = firebase.auth();
  testResults.auth = true;
  updateStatus('auth', 'success', 'Auth service ready');
- console.log('&#10003; Authentication available');
+ console.log('✓ Authentication available');
 
  // Test 3: Firestore
  updateStatus('firestore', 'testing', 'Connecting to Firestore...');
@@ -244,7 +244,7 @@
 
  testResults.firestore = true;
  updateStatus('firestore', 'success', 'Database connected. Read/write working!');
- console.log('&#10003; Firestore connected');
+ console.log('✓ Firestore connected');
 
  // Clean up
  await db.collection('_test').doc('connection').delete();
@@ -256,7 +256,7 @@
  const storage = firebase.storage();
  testResults.storage = true;
  updateStatus('storage', 'success', `Storage bucket: ${storage.app.options.storageBucket}`);
- console.log('&#10003; Storage available');
+ console.log('✓ Storage available');
 
  // Test 5: Analytics
  updateStatus('analytics', 'testing', 'Initializing Analytics...');
@@ -266,22 +266,22 @@
  analytics.logEvent('test_connection');
  testResults.analytics = true;
  updateStatus('analytics', 'success', 'Analytics tracking events');
- console.log('&#10003; Analytics tracking');
+ console.log('✓ Analytics tracking');
 
  // Summary
  const allPassed = Object.values(testResults).every(v => v);
- btn.textContent = allPassed ? '&#127881; All Tests Passed!' : '&#9888;&#65039; Some Failed';
+ btn.textContent = allPassed ? '🎉 All Tests Passed!' : '⚠️ Some Failed';
 
  if (allPassed) {
  setTimeout(() => {
- if (confirm('&#127881; Firebase is fully configured!\n\nGo to dashboard?')) {
+ if (confirm('🎉 Firebase is fully configured!\n\nGo to dashboard?')) {
  window.location.href = '/';
  }
  }, 1000);
  }
 
  } catch (error) {
- console.error('&#10060; Test error:', error);
+ console.error('❌ Test error:', error);
  btn.textContent = 'Error - Check Console';
  updateStatus('app', 'error', error.message);
  }
@@ -299,7 +299,7 @@
 
  // Log when page loads
  window.addEventListener('load', () => {
- console.log('&#9989; Test page loaded');
+ console.log('✅ Test page loaded');
  console.log('Firebase SDK available:', typeof firebase !== 'undefined');
  console.log('Click "Run Tests" to start');
  });

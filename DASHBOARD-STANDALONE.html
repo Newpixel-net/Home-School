@@ -1444,7 +1444,7 @@
  await updateStreak();
 
  // Check if new user needs to pick avatar
- if (userData && (!userData.avatar || userData.avatar === '&#127912;')) {
+ if (userData && (!userData.avatar || userData.avatar === '🎨')) {
  setTimeout(() => {
  showAvatarPicker();
  }, 1000); // Show after 1 second
@@ -1742,7 +1742,7 @@
  return {
  userId: userId,
  name: 'Mia',
- avatar: '&#127912;',
+ avatar: '🎨',
  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
  lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
  stats: {
@@ -1775,7 +1775,7 @@
  // AVATAR PICKER SYSTEM
  // ========================================
 
- const availableAvatars = ['&#127912;', '&#129409;', '&#128054;', '&#128049;', '&#128059;', '&#128040;', '&#128045;', '&#128029;', '&#128056;', '&#128028;', '&#127752;', '&#127775;', '&#127800;', '&#127801;', '&#127793;', '&#127826;', '&#127851;', '&#127883;', '&#127873;', '&#127882;'];
+ const availableAvatars = ['🎨', '🦁', '🐶', '🐱', '🐻', '🐨', '🐭', '🐝', '🐸', '🐜', '🌈', '🌟', '🌸', '🌹', '🌱', '🍒', '🍫', '🎉', '🎁', '🎊'];
  let selectedAvatar = null;
 
  function showAvatarPicker() {
@@ -1999,7 +1999,7 @@
  function loadDemoData() {
  userData = {
  name: 'Mia',
- avatar: '&#127912;',
+ avatar: '🎨',
  stats: {
  totalActivities: 12,
  timeSpent: 150, // minutes
@@ -2094,7 +2094,7 @@
  // Update avatar
  const avatar = document.getElementById('user-avatar');
  if (avatar) {
- avatar.textContent = userData.avatar || '&#127912;';
+ avatar.textContent = userData.avatar || '🎨';
  avatar.style.cursor = 'pointer';
  avatar.title = 'Click to change avatar';
  avatar.onclick = showAvatarPicker;

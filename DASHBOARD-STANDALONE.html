@@ -2324,17 +2324,17 @@
  }
 
  function navigateToModule(moduleName, moduleUrl) {
- console.log('&#128640; Navigating to: ' + moduleName);
+ console.log('🚀 Navigating to: ' + moduleName);
 
  if (moduleUrl) {
  window.location.href = moduleUrl;
  } else {
- alert('&#128640; ' + moduleName + ' module will open here!\n\nCreate a page at: /' + moduleName);
+ alert('🚀 ' + moduleName + ' module will open here!\n\nCreate a page at: /' + moduleName);
  }
  }
 
  function showComingSoonMessage(moduleName) {
- alert('&#10024; ' + moduleName + ' is coming soon!\n\nStay tuned for amazing learning adventures!');
+ alert('✨ ' + moduleName + ' is coming soon!\n\nStay tuned for amazing learning adventures!');
  }
 
  function continueLearning() {
@@ -2343,7 +2343,7 @@
  }
 
  function openParentDashboard() {
- alert('&#128104;&zwj;&#128105;&zwj;&#128103; Parent Dashboard\n\nThis feature is coming soon and will include:\n&bull; Progress reports\n&bull; Activity monitoring\n&bull; Time limits\n&bull; Content controls');
+ alert('👨‍👩‍👧 Parent Dashboard\n\nThis feature is coming soon and will include:\n• Progress reports\n• Activity monitoring\n• Time limits\n• Content controls');
  }
 
  function setupAchievements() {
@@ -2352,7 +2352,7 @@
  badges.forEach(badge => {
  badge.addEventListener('click', () => {
  const badgeName = badge.getAttribute('title');
- alert('&#127942; ' + badgeName + '\n\nCongratulations! You\'ve earned this achievement badge!');
+ alert('🏆 ' + badgeName + '\n\nCongratulations! You\'ve earned this achievement badge!');
  });
  });
  }
@@ -2372,19 +2372,19 @@
 
  // Setup authentication event listeners
  function setupAuthEventListeners() {
- console.log('&#128295; Setting up authentication event listeners...');
+ console.log('🔧 Setting up authentication event listeners...');
 
  // Auth button (open modal)
  const authButton = document.getElementById('auth-button');
  if (authButton) {
  authButton.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('&#128280; Auth button clicked');
+ console.log('🔘 Auth button clicked');
  openAuthModal();
  });
- console.log('&#9989; Auth button listener attached');
+ console.log('✅ Auth button listener attached');
  } else {
- console.error('&#10060; Auth button not found');
+ console.error('❌ Auth button not found');
  }
 
  // Sign out button
@@ -2392,12 +2392,12 @@
  if (signoutButton) {
  signoutButton.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('&#128280; Sign out button clicked');
+ console.log('🔘 Sign out button clicked');
  handleSignOut();
  });
- console.log('&#9989; Signout button listener attached');
+ console.log('✅ Signout button listener attached');
  } else {
- console.error('&#10060; Signout button not found');
+ console.error('❌ Signout button not found');
  }
 
  // Close modal button
@@ -2405,12 +2405,12 @@
  if (closeModalBtn) {
  closeModalBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('&#128280; Close modal button clicked');
+ console.log('🔘 Close modal button clicked');
  closeAuthModal();
  });
- console.log('&#9989; Close modal button listener attached');
+ console.log('✅ Close modal button listener attached');
  } else {
- console.error('&#10060; Close modal button not found');
+ console.error('❌ Close modal button not found');
  }
 
  // Sign in form
@@ -2419,13 +2419,13 @@
  signinForm.addEventListener('submit', function(e) {
  e.preventDefault();
  e.stopPropagation();
- console.log('&#128221; Sign in form submitted');
+ console.log('📝 Sign in form submitted');
  handleSignIn(e);
  return false;
  });
- console.log('&#9989; Sign in form listener attached');
+ console.log('✅ Sign in form listener attached');
  } else {
- console.error('&#10060; Sign in form not found');
+ console.error('❌ Sign in form not found');
  }
 
  // Sign up form
@@ -2434,13 +2434,13 @@
  signupForm.addEventListener('submit', function(e) {
  e.preventDefault();
  e.stopPropagation();
- console.log('&#128221; Sign up form submitted');
+ console.log('📝 Sign up form submitted');
  handleSignUp(e);
  return false;
  });
- console.log('&#9989; Sign up form listener attached');
+ console.log('✅ Sign up form listener attached');
  } else {
- console.error('&#10060; Sign up form not found');
+ console.error('❌ Sign up form not found');
  }
 
  // Show sign up button
@@ -2448,12 +2448,12 @@
  if (showSignupBtn) {
  showSignupBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('&#128280; Show signup button clicked');
+ console.log('🔘 Show signup button clicked');
  showSignUp();
  });
- console.log('&#9989; Show signup button listener attached');
+ console.log('✅ Show signup button listener attached');
  } else {
- console.error('&#10060; Show signup button not found');
+ console.error('❌ Show signup button not found');
  }
 
  // Show sign in button
@@ -2461,12 +2461,12 @@
  if (showSigninBtn) {
  showSigninBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('&#128280; Show signin button clicked');
+ console.log('🔘 Show signin button clicked');
  showSignIn();
  });
- console.log('&#9989; Show signin button listener attached');
+ console.log('✅ Show signin button listener attached');
  } else {
- console.error('&#10060; Show signin button not found');
+ console.error('❌ Show signin button not found');
  }
 
  // Click outside modal to close
@@ -2474,46 +2474,46 @@
  if (authModal) {
  authModal.addEventListener('click', function(e) {
  if (e.target === authModal) {
- console.log('&#128280; Clicked outside modal');
+ console.log('🔘 Clicked outside modal');
  closeAuthModal();
  }
  });
- console.log('&#9989; Modal backdrop listener attached');
+ console.log('✅ Modal backdrop listener attached');
  }
 
- console.log('&#9989; All authentication event listeners setup complete');
+ console.log('✅ All authentication event listeners setup complete');
  }
 
  // Setup avatar picker event listeners
  function setupAvatarPickerListeners() {
- console.log('&#128295; Setting up avatar picker listeners...');
+ console.log('🔧 Setting up avatar picker listeners...');
 
  const avatarConfirmBtn = document.getElementById('avatar-confirm-btn');
  if (avatarConfirmBtn) {
  avatarConfirmBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('&#128280; Avatar confirm button clicked');
+ console.log('🔘 Avatar confirm button clicked');
  confirmAvatar();
  });
- console.log('&#9989; Avatar confirm button listener attached');
+ console.log('✅ Avatar confirm button listener attached');
  }
 
  const avatarSkipBtn = document.getElementById('avatar-skip-btn');
  if (avatarSkipBtn) {
  avatarSkipBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('&#128280; Avatar skip button clicked');
+ console.log('🔘 Avatar skip button clicked');
  hideAvatarPicker();
  });
- console.log('&#9989; Avatar skip button listener attached');
+ console.log('✅ Avatar skip button listener attached');
  }
 
- console.log('&#9989; Avatar picker listeners setup complete');
+ console.log('✅ Avatar picker listeners setup complete');
  }
 
  // Initialize dashboard when page loads
  window.addEventListener('load', function() {
- console.log('&#128640; Initializing dashboard...');
+ console.log('🚀 Initializing dashboard...');
 
  // Setup authentication event listeners FIRST
  setupAuthEventListeners();
@@ -2530,7 +2530,7 @@
  setupAchievements();
  animateProgressBars();
 
- console.log('&#9989; Dashboard initialized');
+ console.log('✅ Dashboard initialized');
  });
 
  // Expose utility functions for apps and debugging

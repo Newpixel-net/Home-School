@@ -1717,6 +1717,15 @@
  }
  }
 
+ // Helper function to decode HTML entities to actual characters
+ function decodeHTMLEntities(text) {
+ if (!text || typeof text !== 'string') return text;
+
+ const textarea = document.createElement('textarea');
+ textarea.innerHTML = text;
+ return textarea.value;
+ }
+
  // Load user data from Firestore
  async function loadUserData(userId) {
  try {
@@ -1724,6 +1733,19 @@
 
  if (userDoc.exists) {
  userData = userDoc.data();
+
+ // Migrate old HTML entity avatars to actual emojis
+ if (userData.avatar && userData.avatar.includes('&#')) {
+ console.log('🔄 Migrating avatar from HTML entity to emoji');
+ userData.avatar = decodeHTMLEntities(userData.avatar);
+
+ // Update database with actual emoji
+ await db.collection('users').doc(userId).update({
+ avatar: userData.avatar
+ });
+ console.log('✅ Avatar migrated to:', userData.avatar);
+ }
+
  console.log('✅ User data loaded:', userData);
  } else {
  // Create new user document
@@ -1847,14 +1869,17 @@
  async function confirmAvatar() {
  if (!selectedAvatar || !currentUser) return;
 
+ // Save avatar to local variable before hiding picker
+ const avatarToSave = selectedAvatar;
+
  try {
  await db.collection('users').doc(currentUser.uid).update({
- avatar: selectedAvatar
+ avatar: avatarToSave
  });
- userData.avatar = selectedAvatar;
+ userData.avatar = avatarToSave;
+ console.log('✅ Avatar updated to:', avatarToSave);
  updateDashboard();
  hideAvatarPicker();
- console.log('✅ Avatar updated to:', selectedAvatar);
  } catch (error) {
  console.error('❌ Error updating avatar:', error);
  console.error('Error code:', error.code);

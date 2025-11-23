@@ -1847,14 +1847,17 @@
  async function confirmAvatar() {
  if (!selectedAvatar || !currentUser) return;
 
+ // Save avatar to local variable before hiding picker
+ const avatarToSave = selectedAvatar;
+
  try {
  await db.collection('users').doc(currentUser.uid).update({
- avatar: selectedAvatar
+ avatar: avatarToSave
  });
- userData.avatar = selectedAvatar;
+ userData.avatar = avatarToSave;
+ console.log('✅ Avatar updated to:', avatarToSave);
  updateDashboard();
  hideAvatarPicker();
- console.log('✅ Avatar updated to:', selectedAvatar);
  } catch (error) {
  console.error('❌ Error updating avatar:', error);
  console.error('Error code:', error.code);

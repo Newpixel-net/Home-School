@@ -441,6 +441,11 @@
  // Save progress
  this.saveProgress();
 
+ // Add activity to dashboard (every 6 letters)
+ if (this.completedLetters.size % 6 === 0 && window.parent && window.parent.MiaHomeDashboard) {
+ window.parent.MiaHomeDashboard.addActivity('abc-learning', `Practiced Letters A-${letter}`, String.fromCodePoint(0x1F4DA));
+ }
+
  console.log(`Letter ${letter} marked as completed`);
  }
 
@@ -448,6 +453,14 @@
  const badge = document.getElementById('progress-badge');
  const count = this.completedLetters.size;
  badge.textContent = `Progress: ${count}/26`;
+
+ // Calculate progress percentage
+ const progressPercent = Math.round((count / 26) * 100);
+
+ // Sync progress with dashboard
+ if (window.parent && window.parent.MiaHomeDashboard) {
+ window.parent.MiaHomeDashboard.updateModuleProgress('abc-learning', progressPercent);
+ }
 
  // Celebrate completion
  if (count === 26) {

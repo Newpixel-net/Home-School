@@ -764,11 +764,12 @@ class ColoringBookEnhanced {
       await this.updateUserStats();
 
       // Track activity in dashboard
-      if (window.MiaHomeDashboard && window.MiaHomeDashboard.addActivity) {
-        await window.MiaHomeDashboard.addActivity(
-          'completion',
-          'Created new artwork',
-          { drawingId: drawingId }
+      const dashboard = window.parent?.MiaHomeDashboard || window.MiaHomeDashboard;
+      if (dashboard && dashboard.addActivity) {
+        await dashboard.addActivity(
+          'coloring-book',
+          'Completed Rainbow Drawing',
+          String.fromCodePoint(0x1F3A8)
         );
       }
 
@@ -1036,9 +1037,10 @@ class ColoringBookEnhanced {
       const count = this.gallery.length;
 
       // Update progress in user profile
-      if (window.MiaHomeDashboard && window.MiaHomeDashboard.updateModuleProgress) {
+      const dashboard = window.parent?.MiaHomeDashboard || window.MiaHomeDashboard;
+      if (dashboard && dashboard.updateModuleProgress) {
         const progress = Math.min(100, count * 5); // 5% per artwork, max 100%
-        await window.MiaHomeDashboard.updateModuleProgress('coloring-book', progress);
+        await dashboard.updateModuleProgress('coloring-book', progress);
       }
 
       // Check for achievements
@@ -1055,16 +1057,17 @@ class ColoringBookEnhanced {
   }
 
   async checkAchievements(count) {
-    if (!window.MiaHomeDashboard || !window.MiaHomeDashboard.addAchievement) return;
+    const dashboard = window.parent?.MiaHomeDashboard || window.MiaHomeDashboard;
+    if (!dashboard || !dashboard.addAchievement) return;
 
     // First artwork
     if (count === 1) {
-      await window.MiaHomeDashboard.addAchievement('first-artwork');
+      await dashboard.addAchievement('first-artwork');
     }
 
     // Creative star (10 artworks)
     if (count === 10) {
-      await window.MiaHomeDashboard.addAchievement('creative-star');
+      await dashboard.addAchievement('creative-star');
     }
   }
 }

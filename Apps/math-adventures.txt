@@ -1,0 +1,739 @@
+
+
+
+ meta
+ meta name=viewport
+ titleMath Adventures - Mia's Home Schooltitle
+ style
+  {
+ margin 0;
+ padding 0;
+ box-sizing border-box;
+ }
+
+ body {
+ font-family 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+ min-height 100vh;
+ padding 20px;
+ }
+
+ .container {
+ max-width 1000px;
+ margin 0 auto;
+ }
+
+ .header {
+ text-align center;
+ color white;
+ margin-bottom 30px;
+ }
+
+ .header h1 {
+ font-size 3rem;
+ margin-bottom 10px;
+ text-shadow 2px 2px 4px rgba(0,0,0,0.2);
+ }
+
+ .back-button {
+ display inline-block;
+ background rgba(255, 255, 255, 0.2);
+ color white;
+ padding 12px 24px;
+ border-radius 25px;
+ text-decoration none;
+ font-weight 600;
+ transition all 0.3s ease;
+ backdrop-filter blur(10px);
+ border 2px solid rgba(255, 255, 255, 0.3);
+ margin-bottom 20px;
+ }
+
+ .back-buttonhover {
+ background rgba(255, 255, 255, 0.3);
+ transform translateY(-2px);
+ }
+
+ .progress-container {
+ background white;
+ padding 20px;
+ border-radius 15px;
+ margin-bottom 20px;
+ box-shadow 0 4px 15px rgba(0,0,0,0.1);
+ }
+
+ .progress-bar {
+ background #E2E8F0;
+ height 30px;
+ border-radius 15px;
+ overflow hidden;
+ position relative;
+ }
+
+ .progress-fill {
+ background linear-gradient(90deg, #48BB78, #38A169);
+ height 100%;
+ width 0%;
+ transition width 0.5s ease;
+ display flex;
+ align-items center;
+ justify-content center;
+ color white;
+ font-weight bold;
+ }
+
+ .game-selector {
+ display grid;
+ grid-template-columns repeat(auto-fit, minmax(200px, 1fr));
+ gap 15px;
+ margin-bottom 30px;
+ }
+
+ .game-button {
+ background white;
+ padding 20px;
+ border-radius 15px;
+ border 3px solid transparent;
+ cursor pointer;
+ transition all 0.3s ease;
+ text-align center;
+ box-shadow 0 4px 15px rgba(0,0,0,0.1);
+ }
+
+ .game-buttonhover {
+ transform translateY(-5px);
+ box-shadow 0 6px 20px rgba(0,0,0,0.15);
+ }
+
+ .game-button.active {
+ border-color #667EEA;
+ background linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+ color white;
+ }
+
+ .game-button .icon {
+ font-size 3rem;
+ margin-bottom 10px;
+ }
+
+ .game-button .title {
+ font-size 1.2rem;
+ font-weight 600;
+ }
+
+ .game-area {
+ background white;
+ padding 40px;
+ border-radius 20px;
+ box-shadow 0 10px 30px rgba(0,0,0,0.2);
+ min-height 400px;
+ display none;
+ }
+
+ .game-area.active {
+ display block;
+ animation fadeIn 0.5s ease;
+ }
+
+ @keyframes fadeIn {
+ from {
+ opacity 0;
+ transform translateY(20px);
+ }
+ to {
+ opacity 1;
+ transform translateY(0);
+ }
+ }
+
+ .question-container {
+ text-align center;
+ margin-bottom 30px;
+ }
+
+ .question {
+ font-size 2.5rem;
+ color #2D3748;
+ margin-bottom 20px;
+ font-weight bold;
+ }
+
+ .visual-objects {
+ display flex;
+ justify-content center;
+ flex-wrap wrap;
+ gap 15px;
+ margin 30px 0;
+ min-height 100px;
+ }
+
+ .object {
+ font-size 3rem;
+ animation bounceIn 0.5s ease;
+ }
+
+ @keyframes bounceIn {
+ 0% {
+ opacity 0;
+ transform scale(0.3);
+ }
+ 50% {
+ opacity 1;
+ transform scale(1.1);
+ }
+ 100% {
+ transform scale(1);
+ }
+ }
+
+ .answers {
+ display grid;
+ grid-template-columns repeat(auto-fit, minmax(100px, 1fr));
+ gap 15px;
+ max-width 500px;
+ margin 0 auto;
+ }
+
+ .answer-button {
+ background linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+ color white;
+ border none;
+ padding 20px;
+ font-size 2rem;
+ border-radius 15px;
+ cursor pointer;
+ transition all 0.3s ease;
+ font-weight bold;
+ box-shadow 0 4px 10px rgba(0,0,0,0.2);
+ }
+
+ .answer-buttonhover {
+ transform translateY(-3px);
+ box-shadow 0 6px 15px rgba(0,0,0,0.3);
+ }
+
+ .answer-buttonactive {
+ transform translateY(0);
+ }
+
+ .answer-button.correct {
+ background linear-gradient(135deg, #48BB78 0%, #38A169 100%);
+ animation pulse 0.5s ease;
+ }
+
+ .answer-button.wrong {
+ background linear-gradient(135deg, #F56565 0%, #E53E3E 100%);
+ animation shake 0.5s ease;
+ }
+
+ @keyframes pulse {
+ 0%, 100% { transform scale(1); }
+ 50% { transform scale(1.1); }
+ }
+
+ @keyframes shake {
+ 0%, 100% { transform translateX(0); }
+ 25% { transform translateX(-10px); }
+ 75% { transform translateX(10px); }
+ }
+
+ .feedback {
+ text-align center;
+ font-size 2rem;
+ font-weight bold;
+ margin-top 20px;
+ min-height 50px;
+ }
+
+ .feedback.correct {
+ color #48BB78;
+ }
+
+ .feedback.wrong {
+ color #F56565;
+ }
+
+ .stats {
+ display grid;
+ grid-template-columns repeat(3, 1fr);
+ gap 15px;
+ margin-top 20px;
+ }
+
+ .stat-card {
+ background #F7FAFC;
+ padding 15px;
+ border-radius 10px;
+ text-align center;
+ }
+
+ .stat-value {
+ font-size 2rem;
+ font-weight bold;
+ color #667EEA;
+ }
+
+ .stat-label {
+ font-size 0.9rem;
+ color #718096;
+ margin-top 5px;
+ }
+
+ .celebration {
+ position fixed;
+ top 50%;
+ left 50%;
+ transform translate(-50%, -50%);
+ background white;
+ padding 40px;
+ border-radius 20px;
+ box-shadow 0 10px 40px rgba(0,0,0,0.3);
+ text-align center;
+ display none;
+ z-index 1000;
+ }
+
+ .celebration.show {
+ display block;
+ animation bounceIn 0.5s ease;
+ }
+
+ .celebration h2 {
+ font-size 2.5rem;
+ color #667EEA;
+ margin-bottom 20px;
+ }
+
+ .celebration-emoji {
+ font-size 5rem;
+ margin-bottom 20px;
+ }
+
+ .next-button {
+ background linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+ color white;
+ border none;
+ padding 15px 30px;
+ font-size 1.2rem;
+ border-radius 10px;
+ cursor pointer;
+ font-weight 600;
+ margin-top 20px;
+ }
+
+ .next-buttonhover {
+ transform translateY(-2px);
+ box-shadow 0 4px 15px rgba(0,0,0,0.2);
+ }
+
+ @media (max-width 768px) {
+ .header h1 {
+ font-size 2rem;
+ }
+
+ .question {
+ font-size 1.8rem;
+ }
+
+ .answer-button {
+ font-size 1.5rem;
+ padding 15px;
+ }
+
+ .game-area {
+ padding 20px;
+ }
+ }
+ style
+
+
+ div class=container
+ div class=header
+ a href= class=back-button← Back to Dashboarda
+ h1🔢 Math Adventuresh1
+ pLet's explore the wonderful world of numbers!p
+ div
+
+ div class=progress-container
+ h3 style=margin-bottom 10px; color #2D3748;Your Progressh3
+ div class=progress-bar
+ div class=progress-fill id=progress-fill0%div
+ div
+ div class=stats
+ div class=stat-card
+ div class=stat-value id=total-questions0div
+ div class=stat-labelQuestionsdiv
+ div
+ div class=stat-card
+ div class=stat-value id=correct-answers0div
+ div class=stat-labelCorrectdiv
+ div
+ div class=stat-card
+ div class=stat-value id=accuracy0%div
+ div class=stat-labelAccuracydiv
+ div
+ div
+ div
+
+ div class=game-selector id=game-selector
+ div class=game-button active data-game=counting
+ div class=icon🔢div
+ div class=titleCountingdiv
+ div
+ div class=game-button data-game=addition
+ div class=icon➕div
+ div class=titleAdditiondiv
+ div
+ div class=game-button data-game=subtraction
+ div class=icon➖div
+ div class=titleSubtractiondiv
+ div
+ div class=game-button data-game=comparison
+ div class=icon⚖️div
+ div class=titleComparediv
+ div
+ div
+
+ div class=game-area active id=game-area
+ div class=question-container
+ div class=question id=questionLoading...div
+ div class=visual-objects id=visual-objectsdiv
+ div
+ div class=answers id=answersdiv
+ div class=feedback id=feedbackdiv
+ div
+ div
+
+ div class=celebration id=celebration
+ div class=celebration-emoji🎉div
+ h2Amazing Work!h2
+ p id=celebration-messageYou're doing great!p
+ button class=next-buttonNext Questionbutton
+ div
+
+ script src=httpswww.gstatic.comfirebasejs9.22.0firebase-app-compat.jsscript
+ script src=httpswww.gstatic.comfirebasejs9.22.0firebase-analytics-compat.jsscript
+ script
+  Firebase configuration
+ const firebaseConfig = {
+ apiKey AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k,
+ authDomain mia-home-school-513d2.firebaseapp.com,
+ projectId mia-home-school-513d2,
+ storageBucket mia-home-school-513d2.firebasestorage.app,
+ messagingSenderId 645973670570,
+ appId 1645973670570web78782661d182ce9e17aed3,
+ measurementId G-6YGP5Z1ZQX
+ };
+
+  Initialize Firebase
+ if (!firebase.apps.length) {
+ firebase.initializeApp(firebaseConfig);
+ }
+ const analytics = firebase.analytics();
+
+ class MathAdventures {
+ constructor() {
+ this.currentGame = 'counting';
+ this.stats = {
+ totalQuestions 0,
+ correctAnswers 0,
+ wrongAnswers 0
+ };
+
+  Load saved progress
+ this.loadProgress();
+ this.init();
+ }
+
+ init() {
+ this.setupGameSelector();
+ this.generateQuestion();
+ this.updateStats();
+
+  Track page view
+ analytics.logEvent('page_view', {
+ page_title 'Math Adventures',
+ page_location window.location.href
+ });
+ }
+
+ setupGameSelector() {
+ const buttons = document.querySelectorAll('.game-button');
+ buttons.forEach(button = {
+ button.addEventListener('click', () = {
+ buttons.forEach(b = b.classList.remove('active'));
+ button.classList.add('active');
+ this.currentGame = button.dataset.game;
+ this.generateQuestion();
+
+  Track game selection
+ analytics.logEvent('select_content', {
+ content_type 'math_game',
+ item_id this.currentGame
+ });
+ });
+ });
+ }
+
+ generateQuestion() {
+ const feedback = document.getElementById('feedback');
+ feedback.textContent = '';
+ feedback.className = 'feedback';
+
+ switch(this.currentGame) {
+ case 'counting'
+ this.generateCountingQuestion();
+ break;
+ case 'addition'
+ this.generateAdditionQuestion();
+ break;
+ case 'subtraction'
+ this.generateSubtractionQuestion();
+ break;
+ case 'comparison'
+ this.generateComparisonQuestion();
+ break;
+ }
+ }
+
+ generateCountingQuestion() {
+ const count = Math.floor(Math.random()  10) + 1;
+ this.correctAnswer = count;
+
+ const emojis = ['&#127822;', '&#11088;', '&#127880;', '&#127800;', '&#129419;', '&#128029;', '&#127827;', '&#127752;'];
+ const emoji = emojis[Math.floor(Math.random()  emojis.length)];
+
+ document.getElementById('question').textContent = 'How many do you see';
+
+ const visualObjects = document.getElementById('visual-objects');
+ visualObjects.innerHTML = '';
+ for (let i = 0; i  count; i++) {
+ const obj = document.createElement('div');
+ obj.className = 'object';
+ obj.textContent = emoji;
+ obj.style.animationDelay = `${i  0.1}s`;
+ visualObjects.appendChild(obj);
+ }
+
+ this.generateAnswerButtons(count, 1, 10);
+ }
+
+ generateAdditionQuestion() {
+ const num1 = Math.floor(Math.random()  5) + 1;
+ const num2 = Math.floor(Math.random()  5) + 1;
+ this.correctAnswer = num1 + num2;
+
+ document.getElementById('question').textContent = `${num1} + ${num2} = `;
+
+ const emojis = ['&#127822;', '&#11088;', '&#127880;', '&#127800;'];
+ const emoji1 = emojis[Math.floor(Math.random()  emojis.length)];
+ const emoji2 = emojis[Math.floor(Math.random()  emojis.length)];
+
+ const visualObjects = document.getElementById('visual-objects');
+ visualObjects.innerHTML = '';
+
+ for (let i = 0; i  num1; i++) {
+ const obj = document.createElement('div');
+ obj.className = 'object';
+ obj.textContent = emoji1;
+ obj.style.animationDelay = `${i  0.1}s`;
+ visualObjects.appendChild(obj);
+ }
+
+ const plus = document.createElement('div');
+ plus.className = 'object';
+ plus.textContent = '&#10133;';
+ plus.style.fontSize = '2rem';
+ visualObjects.appendChild(plus);
+
+ for (let i = 0; i  num2; i++) {
+ const obj = document.createElement('div');
+ obj.className = 'object';
+ obj.textContent = emoji2;
+ obj.style.animationDelay = `${(num1 + i + 1)  0.1}s`;
+ visualObjects.appendChild(obj);
+ }
+
+ this.generateAnswerButtons(this.correctAnswer, 1, 10);
+ }
+
+ generateSubtractionQuestion() {
+ const num1 = Math.floor(Math.random()  8) + 3;
+ const num2 = Math.floor(Math.random()  (num1 - 1)) + 1;
+ this.correctAnswer = num1 - num2;
+
+ document.getElementById('question').textContent = `${num1} - ${num2} = `;
+
+ const emojis = ['&#127822;', '&#11088;', '&#127880;', '&#127800;'];
+ const emoji = emojis[Math.floor(Math.random()  emojis.length)];
+
+ const visualObjects = document.getElementById('visual-objects');
+ visualObjects.innerHTML = '';
+
+ for (let i = 0; i  num1; i++) {
+ const obj = document.createElement('div');
+ obj.className = 'object';
+ obj.textContent = emoji;
+ obj.style.animationDelay = `${i  0.1}s`;
+ if (i = this.correctAnswer) {
+ obj.style.opacity = '0.3';
+ obj.style.textDecoration = 'line-through';
+ }
+ visualObjects.appendChild(obj);
+ }
+
+ this.generateAnswerButtons(this.correctAnswer, 0, 10);
+ }
+
+ generateComparisonQuestion() {
+ const num1 = Math.floor(Math.random()  10) + 1;
+ let num2 = Math.floor(Math.random()  10) + 1;
+ while (num1 === num2) {
+ num2 = Math.floor(Math.random()  10) + 1;
+ }
+
+ this.correctAnswer = num1  num2  ''  '';
+
+ document.getElementById('question').textContent = `${num1} ___ ${num2}`;
+ document.getElementById('visual-objects').innerHTML = '';
+
+ const answersDiv = document.getElementById('answers');
+ answersDiv.innerHTML = '';
+
+ const symbols = ['', ''];
+ symbols.forEach(symbol = {
+ const button = document.createElement('button');
+ button.className = 'answer-button';
+ button.textContent = symbol;
+ button.addEventListener('click', () = this.checkAnswer(symbol, button));
+ answersDiv.appendChild(button);
+ });
+ }
+
+ generateAnswerButtons(correctAnswer, min, max) {
+ const answersDiv = document.getElementById('answers');
+ answersDiv.innerHTML = '';
+
+ const answers = new Set([correctAnswer]);
+ while (answers.size  Math.min(4, max - min + 1)) {
+ const random = Math.floor(Math.random()  (max - min + 1)) + min;
+ answers.add(random);
+ }
+
+ const answersArray = Array.from(answers).sort(() = Math.random() - 0.5);
+
+ answersArray.forEach(answer = {
+ const button = document.createElement('button');
+ button.className = 'answer-button';
+ button.textContent = answer;
+ button.addEventListener('click', () = this.checkAnswer(answer, button));
+ answersDiv.appendChild(button);
+ });
+ }
+
+ checkAnswer(answer, button) {
+ this.stats.totalQuestions++;
+
+ const allButtons = document.querySelectorAll('.answer-button');
+ allButtons.forEach(b = b.style.pointerEvents = 'none');
+
+ const feedback = document.getElementById('feedback');
+
+ if (answer == this.correctAnswer) {
+ this.stats.correctAnswers++;
+ button.classList.add('correct');
+ feedback.textContent = '&#10003; Excellent!';
+ feedback.className = 'feedback correct';
+
+  Track correct answer
+ analytics.logEvent('math_answer', {
+ game_type this.currentGame,
+ result 'correct'
+ });
+
+ setTimeout(() = {
+ this.showCelebration();
+ }, 1000);
+ } else {
+ this.stats.wrongAnswers++;
+ button.classList.add('wrong');
+ feedback.textContent = '&#10007; Try again!';
+ feedback.className = 'feedback wrong';
+
+  Track wrong answer
+ analytics.logEvent('math_answer', {
+ game_type this.currentGame,
+ result 'incorrect'
+ });
+
+ setTimeout(() = {
+ allButtons.forEach(b = {
+ b.style.pointerEvents = 'auto';
+ b.classList.remove('wrong');
+ });
+ feedback.textContent = '';
+ }, 1500);
+ }
+
+ this.updateStats();
+ this.saveProgress();
+ }
+
+ showCelebration() {
+ const messages = [
+ You're a math star! &#11088;,
+ Incredible work! &#127881;,
+ You're amazing! &#127775;,
+ Perfect! Keep it up! &#127880;,
+ Brilliant! &#127752;
+ ];
+
+ document.getElementById('celebration-message').textContent =
+ messages[Math.floor(Math.random()  messages.length)];
+ document.getElementById('celebration').classList.add('show');
+ }
+
+ nextQuestion() {
+ document.getElementById('celebration').classList.remove('show');
+ const allButtons = document.querySelectorAll('.answer-button');
+ allButtons.forEach(b = {
+ b.style.pointerEvents = 'auto';
+ b.classList.remove('correct', 'wrong');
+ });
+ this.generateQuestion();
+ }
+
+ updateStats() {
+ document.getElementById('total-questions').textContent = this.stats.totalQuestions;
+ document.getElementById('correct-answers').textContent = this.stats.correctAnswers;
+
+ const accuracy = this.stats.totalQuestions  0
+  Math.round((this.stats.correctAnswers  this.stats.totalQuestions)  100)
+  0;
+ document.getElementById('accuracy').textContent = accuracy + '%';
+
+ const progressFill = document.getElementById('progress-fill');
+ progressFill.style.width = accuracy + '%';
+ progressFill.textContent = accuracy + '%';
+ }
+
+ saveProgress() {
+ localStorage.setItem('math-adventures-progress', JSON.stringify(this.stats));
+ }
+
+ loadProgress() {
+ const saved = localStorage.getItem('math-adventures-progress');
+ if (saved) {
+ this.stats = JSON.parse(saved);
+ }
+ }
+ }
+
+  Initialize the game when page loads
+ let mathGame;
+ window.addEventListener('load', () = {
+ mathGame = new MathAdventures();
+ console.log('&#128290; Math Adventures loaded successfully!');
+ });
+ script
+

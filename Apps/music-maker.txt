@@ -1,0 +1,759 @@
+
+
+
+ <meta>
+ <meta name="viewport">
+ <title>Music Maker - Mia's Home School</title>
+ <style>
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+ min-height: 100vh;
+ padding: 20px;
+ overflow-x: hidden;
+ }
+
+ .container {
+ max-width: 1200px;
+ margin: 0 auto;
+ }
+
+ .header {
+ text-align: center;
+ color: white;
+ margin-bottom: 30px;
+ }
+
+ .header h1 {
+ font-size: 3rem;
+ margin-bottom: 10px;
+ text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+ }
+
+ .back-button {
+ display: inline-block;
+ background: rgba(255, 255, 255, 0.2);
+ color: white;
+ padding: 12px 24px;
+ border-radius: 25px;
+ text-decoration: none;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ backdrop-filter: blur(10px);
+ border: 2px solid rgba(255, 255, 255, 0.3);
+ margin-bottom: 20px;
+ }
+
+ .back-button:hover {
+ background: rgba(255, 255, 255, 0.3);
+ transform: translateY(-2px);
+ }
+
+ .instrument-selector {
+ display: flex;
+ justify-content: center;
+ gap: 15px;
+ margin-bottom: 30px;
+ flex-wrap: wrap;
+ }
+
+ .instrument-btn {
+ background: white;
+ padding: 15px 25px;
+ border-radius: 15px;
+ border: 3px solid transparent;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ font-size: 1.1rem;
+ font-weight: 600;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+ }
+
+ .instrument-btn:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+ }
+
+ .instrument-btn.active {
+ border-color: #FA709A;
+ background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+ color: white;
+ }
+
+ .music-area {
+ background: white;
+ padding: 30px;
+ border-radius: 20px;
+ box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+ margin-bottom: 20px;
+ }
+
+ .piano-container {
+ display: none;
+ flex-direction: column;
+ align-items: center;
+ }
+
+ .piano-container.active {
+ display: flex;
+ }
+
+ .piano-keys {
+ display: flex;
+ position: relative;
+ user-select: none;
+ }
+
+ .white-key {
+ width: 60px;
+ height: 200px;
+ background: white;
+ border: 2px solid #333;
+ border-radius: 0 0 5px 5px;
+ cursor: pointer;
+ transition: all 0.1s ease;
+ display: flex;
+ align-items: flex-end;
+ justify-content: center;
+ padding-bottom: 10px;
+ font-weight: 600;
+ color: #666;
+ }
+
+ .white-key:hover {
+ background: #f0f0f0;
+ }
+
+ .white-key:active, .white-key.playing {
+ background: #FA709A;
+ color: white;
+ transform: translateY(2px);
+ }
+
+ .black-key {
+ width: 40px;
+ height: 120px;
+ background: #333;
+ border: 2px solid #000;
+ border-radius: 0 0 3px 3px;
+ cursor: pointer;
+ position: absolute;
+ z-index: 2;
+ transition: all 0.1s ease;
+ }
+
+ .black-key:hover {
+ background: #555;
+ }
+
+ .black-key:active, .black-key.playing {
+ background: #FEE140;
+ transform: translateY(2px);
+ }
+
+ .drums-container {
+ display: none;
+ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+ gap: 20px;
+ }
+
+ .drums-container.active {
+ display: grid;
+ }
+
+ .drum-pad {
+ aspect-ratio: 1;
+ background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+ border-radius: 15px;
+ border: none;
+ cursor: pointer;
+ font-size: 3rem;
+ transition: all 0.1s ease;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ color: white;
+ font-weight: bold;
+ }
+
+ .drum-pad .label {
+ font-size: 1rem;
+ margin-top: 10px;
+ }
+
+ .drum-pad:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+ }
+
+ .drum-pad:active, .drum-pad.playing {
+ transform: scale(0.95);
+ box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+ }
+
+ .sounds-container {
+ display: none;
+ grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+ gap: 15px;
+ }
+
+ .sounds-container.active {
+ display: grid;
+ }
+
+ .sound-btn {
+ padding: 20px;
+ background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+ color: white;
+ border: none;
+ border-radius: 10px;
+ cursor: pointer;
+ font-size: 2rem;
+ transition: all 0.1s ease;
+ box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+ }
+
+ .sound-btn:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+ }
+
+ .sound-btn:active, .sound-btn.playing {
+ transform: scale(0.95);
+ }
+
+ .controls {
+ display: flex;
+ justify-content: center;
+ gap: 15px;
+ margin-top: 30px;
+ flex-wrap: wrap;
+ }
+
+ .control-btn {
+ background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+ color: white;
+ border: none;
+ padding: 15px 30px;
+ font-size: 1.1rem;
+ border-radius: 10px;
+ cursor: pointer;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ }
+
+ .control-btn:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+ }
+
+ .control-btn:disabled {
+ opacity: 0.5;
+ cursor: not-allowed;
+ transform: none;
+ }
+
+ .volume-control {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ background: white;
+ padding: 15px 20px;
+ border-radius: 10px;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+ margin-top: 20px;
+ }
+
+ .volume-slider {
+ width: 200px;
+ height: 8px;
+ -webkit-appearance: none;
+ appearance: none;
+ background: #E2E8F0;
+ border-radius: 5px;
+ outline: none;
+ }
+
+ .volume-slider::-webkit-slider-thumb {
+ -webkit-appearance: none;
+ appearance: none;
+ width: 20px;
+ height: 20px;
+ background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+ border-radius: 50%;
+ cursor: pointer;
+ }
+
+ .volume-slider::-moz-range-thumb {
+ width: 20px;
+ height: 20px;
+ background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
+ border-radius: 50%;
+ cursor: pointer;
+ border: none;
+ }
+
+ .keyboard-hint {
+ text-align: center;
+ color: #718096;
+ margin-top: 20px;
+ font-size: 0.9rem;
+ }
+
+ @keyframes noteAnimation {
+ 0% {
+ transform: translateY(0) scale(1);
+ opacity: 1;
+ }
+ 100% {
+ transform: translateY(-100px) scale(1.5);
+ opacity: 0;
+ }
+ }
+
+ .note-animation {
+ position: fixed;
+ font-size: 2rem;
+ animation: noteAnimation 1s ease-out forwards;
+ pointer-events: none;
+ z-index: 1000;
+ }
+
+ @media (max-width: 768px) {
+ .header h1 {
+ font-size: 2rem;
+ }
+
+ .white-key {
+ width: 45px;
+ height: 150px;
+ }
+
+ .black-key {
+ width: 30px;
+ height: 90px;
+ }
+
+ .music-area {
+ padding: 15px;
+ }
+
+ .piano-keys {
+ overflow-x: auto;
+ }
+ }
+ </style>
+
+
+ <div class="container">
+ <div class="header">
+ <a href="/" class="back-button">← Back to Dashboard</a>
+ <h1>🎵 Music Maker</h1>
+ <p>Create beautiful music and sounds!</p>
+ </div>
+
+ <div class="instrument-selector">
+ <button class="instrument-btn active" data-instrument="piano">🎹 Piano</button>
+ <button class="instrument-btn" data-instrument="drums">🥁 Drums</button>
+ <button class="instrument-btn" data-instrument="sounds">🔊 Sound Effects</button>
+ </div>
+
+ <div class="music-area">
+ <div class="piano-container active" id="piano-container">
+ <div class="piano-keys" id="piano-keys"></div>
+ <div class="keyboard-hint">Click on keys or use your keyboard (A-K keys)</div>
+ </div>
+
+ <div class="drums-container" id="drums-container"></div>
+
+ <div class="sounds-container" id="sounds-container"></div>
+
+ <div class="volume-control">
+ <span style="font-size: 1.5rem;">🔊</span>
+ <input type="range" class="volume-slider" id="volume-slider" value="70">
+ <span id="volume-label" style="font-weight: 600;">70%</span>
+ </div>
+ </div>
+ </div>
+
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+ <script>
+ // Firebase configuration
+ const firebaseConfig = {
+ apiKey: "AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k",
+ authDomain: "mia-home-school-513d2.firebaseapp.com",
+ projectId: "mia-home-school-513d2",
+ storageBucket: "mia-home-school-513d2.firebasestorage.app",
+ messagingSenderId: "645973670570",
+ appId: "1:645973670570:web:78782661d182ce9e17aed3",
+ measurementId: "G-6YGP5Z1ZQX"
+ };
+
+ // Initialize Firebase
+ if (!firebase.apps.length) {
+ firebase.initializeApp(firebaseConfig);
+ }
+ const analytics = firebase.analytics();
+
+ class MusicMaker {
+ constructor() {
+ this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+ this.masterVolume = 0.7;
+ this.currentInstrument = 'piano';
+
+ this.pianoNotes = [
+ { note: 'C', freq: 261.63, key: 'A', type: 'white' },
+ { note: 'C#', freq: 277.18, key: 'W', type: 'black', offset: 40 },
+ { note: 'D', freq: 293.66, key: 'S', type: 'white' },
+ { note: 'D#', freq: 311.13, key: 'E', type: 'black', offset: 102 },
+ { note: 'E', freq: 329.63, key: 'D', type: 'white' },
+ { note: 'F', freq: 349.23, key: 'F', type: 'white' },
+ { note: 'F#', freq: 369.99, key: 'T', type: 'black', offset: 226 },
+ { note: 'G', freq: 392.00, key: 'G', type: 'white' },
+ { note: 'G#', freq: 415.30, key: 'Y', type: 'black', offset: 288 },
+ { note: 'A', freq: 440.00, key: 'H', type: 'white' },
+ { note: 'A#', freq: 466.16, key: 'U', type: 'black', offset: 350 },
+ { note: 'B', freq: 493.88, key: 'J', type: 'white' },
+ { note: 'C2', freq: 523.25, key: 'K', type: 'white' }
+ ];
+
+ this.drums = [
+ { name: 'Kick', emoji: '&#129406;', key: 'A' },
+ { name: 'Snare', emoji: '&#127919;', key: 'S' },
+ { name: 'Hi-Hat', emoji: '&#127913;', key: 'D' },
+ { name: 'Tom', emoji: '&#127914;', key: 'F' },
+ { name: 'Crash', emoji: '&#128165;', key: 'G' },
+ { name: 'Clap', emoji: '&#128079;', key: 'H' }
+ ];
+
+ this.soundEffects = [
+ { name: 'Beep', emoji: '&#128226;' },
+ { name: 'Boop', emoji: '&#128276;' },
+ { name: 'Whoosh', emoji: '&#128168;' },
+ { name: 'Pop', emoji: '&#127880;' },
+ { name: 'Ding', emoji: '&#10024;' },
+ { name: 'Buzz', emoji: '&#128029;' }
+ ];
+
+ this.init();
+ }
+
+ init() {
+ this.setupInstrumentSelector();
+ this.setupVolumeControl();
+ this.createPiano();
+ this.createDrums();
+ this.createSoundEffects();
+ this.setupKeyboardControls();
+
+ analytics.logEvent('page_view', {
+ page_title: 'Music Maker',
+ page_location: window.location.href
+ });
+ }
+
+ setupInstrumentSelector() {
+ const buttons = document.querySelectorAll('.instrument-btn');
+ buttons.forEach(button => {
+ button.addEventListener('click', () => {
+ buttons.forEach(b => b.classList.remove('active'));
+ button.classList.add('active');
+
+ const instrument = button.dataset.instrument;
+ this.switchInstrument(instrument);
+
+ analytics.logEvent('select_content', {
+ content_type: 'instrument',
+ item_id: instrument
+ });
+ });
+ });
+ }
+
+ switchInstrument(instrument) {
+ this.currentInstrument = instrument;
+
+ document.getElementById('piano-container').classList.remove('active');
+ document.getElementById('drums-container').classList.remove('active');
+ document.getElementById('sounds-container').classList.remove('active');
+
+ document.getElementById(`${instrument}-container`).classList.add('active');
+ }
+
+ setupVolumeControl() {
+ const slider = document.getElementById('volume-slider');
+ const label = document.getElementById('volume-label');
+
+ slider.addEventListener('input', (e) => {
+ this.masterVolume = e.target.value / 100;
+ label.textContent = e.target.value + '%';
+ });
+ }
+
+ createPiano() {
+ const container = document.getElementById('piano-keys');
+
+ this.pianoNotes.forEach((note, index) => {
+ const key = document.createElement('div');
+ key.className = note.type === 'white' ? 'white-key' : 'black-key';
+
+ if (note.type === 'white') {
+ key.textContent = note.key;
+ container.appendChild(key);
+ } else {
+ key.style.left = `${note.offset}px`;
+ container.appendChild(key);
+ }
+
+ key.addEventListener('mousedown', () => this.playPianoNote(note.freq, key));
+ key.addEventListener('mouseup', () => key.classList.remove('playing'));
+ key.addEventListener('mouseleave', () => key.classList.remove('playing'));
+
+ key.addEventListener('touchstart', (e) => {
+ e.preventDefault();
+ this.playPianoNote(note.freq, key);
+ });
+ key.addEventListener('touchend', (e) => {
+ e.preventDefault();
+ key.classList.remove('playing');
+ });
+ });
+ }
+
+ createDrums() {
+ const container = document.getElementById('drums-container');
+
+ this.drums.forEach(drum => {
+ const pad = document.createElement('button');
+ pad.className = 'drum-pad';
+ pad.innerHTML = `
+ <div class="emoji">${drum.emoji}</div>
+ <div class="label">${drum.name}</div>
+ `;
+
+ pad.addEventListener('click', () => this.playDrum(drum.name, pad));
+ container.appendChild(pad);
+ });
+ }
+
+ createSoundEffects() {
+ const container = document.getElementById('sounds-container');
+
+ this.soundEffects.forEach(sound => {
+ const btn = document.createElement('button');
+ btn.className = 'sound-btn';
+ btn.textContent = sound.emoji;
+ btn.title = sound.name;
+
+ btn.addEventListener('click', () => this.playSoundEffect(sound.name, btn));
+ container.appendChild(btn);
+ });
+ }
+
+ setupKeyboardControls() {
+ document.addEventListener('keydown', (e) => {
+ if (e.repeat) return;
+
+ if (this.currentInstrument === 'piano') {
+ const note = this.pianoNotes.find(n => n.key === e.key.toUpperCase());
+ if (note) {
+ const keys = document.querySelectorAll('.white-key, .black-key');
+ const index = this.pianoNotes.indexOf(note);
+ this.playPianoNote(note.freq, keys[index]);
+ }
+ } else if (this.currentInstrument === 'drums') {
+ const drum = this.drums.find(d => d.key === e.key.toUpperCase());
+ if (drum) {
+ const pads = document.querySelectorAll('.drum-pad');
+ const index = this.drums.indexOf(drum);
+ this.playDrum(drum.name, pads[index]);
+ }
+ }
+ });
+
+ document.addEventListener('keyup', (e) => {
+ const keys = document.querySelectorAll('.white-key, .black-key');
+ keys.forEach(key => key.classList.remove('playing'));
+ });
+ }
+
+ playPianoNote(frequency, element) {
+ const oscillator = this.audioContext.createOscillator();
+ const gainNode = this.audioContext.createGain();
+
+ oscillator.connect(gainNode);
+ gainNode.connect(this.audioContext.destination);
+
+ oscillator.frequency.value = frequency;
+ oscillator.type = 'sine';
+
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.3, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 1);
+
+ oscillator.start(this.audioContext.currentTime);
+ oscillator.stop(this.audioContext.currentTime + 1);
+
+ element.classList.add('playing');
+ this.createNoteAnimation(element, '&#127925;');
+
+ setTimeout(() => element.classList.remove('playing'), 200);
+
+ analytics.logEvent('play_sound', {
+ instrument: 'piano',
+ frequency: frequency
+ });
+ }
+
+ playDrum(drumType, element) {
+ const oscillator = this.audioContext.createOscillator();
+ const gainNode = this.audioContext.createGain();
+ const filter = this.audioContext.createBiquadFilter();
+
+ oscillator.connect(filter);
+ filter.connect(gainNode);
+ gainNode.connect(this.audioContext.destination);
+
+ // Different drum sounds
+ switch(drumType) {
+ case 'Kick':
+ oscillator.frequency.value = 150;
+ filter.frequency.value = 100;
+ gainNode.gain.setValueAtTime(this.masterVolume, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+ break;
+ case 'Snare':
+ oscillator.frequency.value = 200;
+ oscillator.type = 'triangle';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.7, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+ break;
+ case 'Hi-Hat':
+ oscillator.frequency.value = 800;
+ oscillator.type = 'square';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.3, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+ break;
+ case 'Tom':
+ oscillator.frequency.value = 220;
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.8, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.4);
+ break;
+ case 'Crash':
+ oscillator.frequency.value = 1000;
+ oscillator.type = 'sawtooth';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.5, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 1);
+ break;
+ case 'Clap':
+ oscillator.frequency.value = 400;
+ oscillator.type = 'square';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.6, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+ break;
+ }
+
+ oscillator.start(this.audioContext.currentTime);
+ oscillator.stop(this.audioContext.currentTime + 1);
+
+ element.classList.add('playing');
+ this.createNoteAnimation(element, '&#129345;');
+
+ setTimeout(() => element.classList.remove('playing'), 150);
+
+ analytics.logEvent('play_sound', {
+ instrument: 'drums',
+ drum_type: drumType
+ });
+ }
+
+ playSoundEffect(effectName, element) {
+ const oscillator = this.audioContext.createOscillator();
+ const gainNode = this.audioContext.createGain();
+
+ oscillator.connect(gainNode);
+ gainNode.connect(this.audioContext.destination);
+
+ // Different sound effects
+ switch(effectName) {
+ case 'Beep':
+ oscillator.frequency.value = 880;
+ oscillator.type = 'square';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.3, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+ break;
+ case 'Boop':
+ oscillator.frequency.value = 220;
+ oscillator.type = 'sine';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.4, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+ break;
+ case 'Whoosh':
+ oscillator.frequency.setValueAtTime(1000, this.audioContext.currentTime);
+ oscillator.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + 0.5);
+ oscillator.type = 'sawtooth';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.3, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+ break;
+ case 'Pop':
+ oscillator.frequency.value = 500;
+ oscillator.type = 'sine';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.5, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.05);
+ break;
+ case 'Ding':
+ oscillator.frequency.value = 1760;
+ oscillator.type = 'sine';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.4, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.8);
+ break;
+ case 'Buzz':
+ oscillator.frequency.value = 110;
+ oscillator.type = 'sawtooth';
+ gainNode.gain.setValueAtTime(this.masterVolume * 0.3, this.audioContext.currentTime);
+ gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+ break;
+ }
+
+ oscillator.start(this.audioContext.currentTime);
+ oscillator.stop(this.audioContext.currentTime + 1);
+
+ element.classList.add('playing');
+ setTimeout(() => element.classList.remove('playing'), 150);
+
+ analytics.logEvent('play_sound', {
+ instrument: 'sound_effects',
+ effect: effectName
+ });
+ }
+
+ createNoteAnimation(element, emoji) {
+ const rect = element.getBoundingClientRect();
+ const note = document.createElement('div');
+ note.className = 'note-animation';
+ note.textContent = emoji;
+ note.style.left = `${rect.left + rect.width / 2}px`;
+ note.style.top = `${rect.top}px`;
+
+ document.body.appendChild(note);
+
+ setTimeout(() => note.remove(), 1000);
+ }
+ }
+
+ // Initialize
+ let musicMaker;
+ window.addEventListener('load', () => {
+ musicMaker = new MusicMaker();
+ console.log('&#127925; Music Maker loaded successfully!');
+ });
+ </script>
+

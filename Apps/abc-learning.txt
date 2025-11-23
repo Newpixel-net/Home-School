@@ -1,0 +1,507 @@
+
+
+
+ <meta>
+ <meta name="viewport">
+ <title>🔤 ABC Learning - Mia's Home School</title>
+
+ <!-- Firebase SDK -->
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+ <style>
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+ background: linear-gradient(135deg, #48BB78 0%, #38A169 100%);
+ min-height: 100vh;
+ padding: 20px;
+ }
+
+ .header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ background: white;
+ padding: 15px 25px;
+ border-radius: 15px;
+ margin-bottom: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+
+ .header h1 {
+ font-size: 1.5rem;
+ color: #2d3748;
+ }
+
+ .progress-badge {
+ background: linear-gradient(135deg, #667eea, #764ba2);
+ color: white;
+ padding: 8px 20px;
+ border-radius: 20px;
+ font-weight: 600;
+ font-size: 0.9rem;
+ }
+
+ .btn {
+ padding: 10px 20px;
+ border: none;
+ border-radius: 10px;
+ font-weight: 600;
+ cursor: pointer;
+ transition: all 0.2s;
+ background: #e2e8f0;
+ color: #2d3748;
+ }
+
+ .btn:hover {
+ background: #cbd5e0;
+ }
+
+ .content {
+ max-width: 1200px;
+ margin: 0 auto;
+ }
+
+ .letter-display {
+ background: white;
+ border-radius: 20px;
+ padding: 40px;
+ text-align: center;
+ margin-bottom: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+
+ .letter-large {
+ font-size: 10rem;
+ font-weight: 900;
+ color: #667eea;
+ text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+ margin-bottom: 30px;
+ animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+ }
+
+ @keyframes bounceIn {
+ 0% {
+ opacity: 0;
+ transform: scale(0.3);
+ }
+ 50% {
+ opacity: 1;
+ transform: scale(1.05);
+ }
+ 70% {
+ transform: scale(0.9);
+ }
+ 100% {
+ transform: scale(1);
+ }
+ }
+
+ .play-sound-btn {
+ padding: 15px 40px;
+ font-size: 1.3rem;
+ background: linear-gradient(135deg, #48BB78, #38A169);
+ color: white;
+ border: none;
+ border-radius: 15px;
+ cursor: pointer;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ transition: all 0.3s;
+ font-weight: 700;
+ }
+
+ .play-sound-btn:hover {
+ transform: translateY(-4px) scale(1.05);
+ box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+ }
+
+ .play-sound-btn:active {
+ transform: translateY(0) scale(1);
+ }
+
+ .alphabet-grid {
+ background: white;
+ border-radius: 20px;
+ padding: 30px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+
+ .alphabet-grid h2 {
+ margin-bottom: 20px;
+ color: #2d3748;
+ }
+
+ .letters-container {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+ gap: 10px;
+ }
+
+ .letter-btn {
+ aspect-ratio: 1;
+ background: #f7fafc;
+ border: 2px solid #e2e8f0;
+ border-radius: 12px;
+ font-size: 1.8rem;
+ font-weight: 700;
+ color: #2d3748;
+ cursor: pointer;
+ transition: all 0.2s;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ }
+
+ .letter-btn:hover {
+ background: #667eea;
+ color: white;
+ transform: scale(1.1);
+ box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+ }
+
+ .letter-btn.active {
+ background: #667eea;
+ color: white;
+ border-color: #667eea;
+ }
+
+ .letter-btn.completed {
+ background: #48BB78;
+ color: white;
+ border-color: #48BB78;
+ position: relative;
+ }
+
+ .letter-btn.completed::after {
+ content: '&#10003;';
+ position: absolute;
+ bottom: 2px;
+ right: 2px;
+ font-size: 1rem;
+ }
+
+ .activities-section {
+ background: white;
+ border-radius: 20px;
+ padding: 30px;
+ margin-bottom: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+
+ .activities-section h2 {
+ margin-bottom: 20px;
+ color: #2d3748;
+ }
+
+ .activity-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 15px;
+ }
+
+ .activity-card {
+ background: linear-gradient(135deg, #f7fafc, #edf2f7);
+ padding: 25px;
+ border-radius: 15px;
+ text-align: center;
+ cursor: pointer;
+ transition: all 0.3s;
+ border: 2px solid transparent;
+ }
+
+ .activity-card:hover {
+ transform: translateY(-4px);
+ box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+ border-color: #667eea;
+ }
+
+ .activity-icon {
+ font-size: 3rem;
+ margin-bottom: 10px;
+ display: block;
+ }
+
+ .activity-card h3 {
+ font-size: 1.1rem;
+ margin-bottom: 8px;
+ color: #2d3748;
+ }
+
+ .activity-card p {
+ font-size: 0.85rem;
+ color: #4a5568;
+ }
+
+ @media (max-width: 768px) {
+ .letter-large {
+ font-size: 6rem;
+ }
+
+ .letters-container {
+ grid-template-columns: repeat(7, 1fr);
+ }
+ }
+ </style>
+
+
+ <div class="header">
+ <h1>🔤 ABC Learning</h1>
+ <div style="display: flex; align-items: center; gap: 15px;">
+ <span class="progress-badge" id="progress-badge">Progress: 0/26</span>
+ <button class="btn">← Back</button>
+ </div>
+ </div>
+
+ <div class="content">
+ <div class="letter-display">
+ <div class="letter-large" id="letter-large">A</div>
+ <button class="play-sound-btn" id="play-sound">🔊 Play Sound</button>
+ </div>
+
+ <div class="activities-section">
+ <h2>Learning Activities</h2>
+ <div class="activity-grid">
+ <div class="activity-card">
+ <span class="activity-icon">✍️</span>
+ <h3>Letter Tracing</h3>
+ <p>Practice writing</p>
+ </div>
+
+ <div class="activity-card">
+ <span class="activity-icon">🎯</span>
+ <h3>Find &amp; Match</h3>
+ <p>Match letters</p>
+ </div>
+
+ <div class="activity-card">
+ <span class="activity-icon">🎮</span>
+ <h3>Letter Games</h3>
+ <p>Play and learn</p>
+ </div>
+
+ <div class="activity-card">
+ <span class="activity-icon">⭐</span>
+ <h3>Quick Quiz</h3>
+ <p>Test yourself</p>
+ </div>
+ </div>
+ </div>
+
+ <div class="alphabet-grid">
+ <h2>Choose a Letter</h2>
+ <div class="letters-container" id="letters-container"></div>
+ </div>
+ </div>
+
+ <script>
+ // ABC Learning Application
+ class ABCLearning {
+ constructor() {
+ this.currentLetter = 'A';
+ this.completedLetters = new Set();
+ this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+ this.init();
+ }
+
+ init() {
+ console.log('&#128292; ABC Learning initializing...');
+
+ // Generate alphabet grid
+ this.generateAlphabetGrid();
+
+ // Setup event listeners
+ this.setupEventListeners();
+
+ // Load saved progress
+ this.loadProgress();
+
+ console.log('&#9989; ABC Learning ready!');
+ }
+
+ generateAlphabetGrid() {
+ const container = document.getElementById('letters-container');
+ container.innerHTML = '';
+
+ this.alphabet.forEach(letter => {
+ const btn = document.createElement('button');
+ btn.className = 'letter-btn';
+ btn.textContent = letter;
+ btn.dataset.letter = letter;
+
+ if (letter === this.currentLetter) {
+ btn.classList.add('active');
+ }
+
+ btn.addEventListener('click', () => {
+ this.selectLetter(letter);
+ });
+
+ container.appendChild(btn);
+ });
+ }
+
+ setupEventListeners() {
+ document.getElementById('play-sound').addEventListener('click', () => {
+ this.playLetterSound();
+ });
+ }
+
+ selectLetter(letter) {
+ console.log(`Letter selected: ${letter}`);
+ this.currentLetter = letter;
+
+ // Update display with animation
+ const letterDisplay = document.getElementById('letter-large');
+ letterDisplay.style.animation = 'none';
+
+ setTimeout(() => {
+ letterDisplay.textContent = letter;
+ letterDisplay.style.animation = 'bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+ }, 10);
+
+ // Update navigation
+ document.querySelectorAll('.letter-btn').forEach(btn => {
+ btn.classList.remove('active');
+ if (btn.dataset.letter === letter) {
+ btn.classList.add('active');
+ }
+ });
+
+ // Auto-play sound
+ this.playLetterSound();
+
+ // Track with Firebase
+ if (window.firebaseManager && window.firebaseManager.initialized) {
+ window.firebaseManager.trackEvent('letter_selected', {
+ letter: letter
+ });
+ }
+ }
+
+ playLetterSound() {
+ const letter = this.currentLetter;
+
+ // Use Web Speech API
+ if ('speechSynthesis' in window) {
+ // Cancel any ongoing speech
+ window.speechSynthesis.cancel();
+
+ // Create utterance
+ const utterance = new SpeechSynthesisUtterance();
+ utterance.text = `The letter ${letter}`;
+ utterance.rate = 0.8;
+ utterance.pitch = 1.2;
+ utterance.volume = 1;
+
+ // Speak
+ window.speechSynthesis.speak(utterance);
+
+ // Animate button
+ const btn = document.getElementById('play-sound');
+ btn.style.animation = 'none';
+ setTimeout(() => {
+ btn.style.animation = 'pulse 0.5s ease-in-out';
+ }, 10);
+
+ console.log(`Playing sound for letter: ${letter}`);
+ } else {
+ alert(`Letter: ${letter}`);
+ }
+
+ // Mark as completed
+ this.markLetterCompleted(letter);
+ }
+
+ markLetterCompleted(letter) {
+ if (this.completedLetters.has(letter)) return;
+
+ this.completedLetters.add(letter);
+
+ // Update UI
+ const btn = document.querySelector(`.letter-btn[data-letter="${letter}"]`);
+ if (btn) {
+ btn.classList.add('completed');
+ }
+
+ // Update progress
+ this.updateProgress();
+
+ // Save progress
+ this.saveProgress();
+
+ console.log(`Letter ${letter} marked as completed`);
+ }
+
+ updateProgress() {
+ const badge = document.getElementById('progress-badge');
+ const count = this.completedLetters.size;
+ badge.textContent = `Progress: ${count}/26`;
+
+ // Celebrate completion
+ if (count === 26) {
+ setTimeout(() => {
+ alert('&#127881; Amazing! You\'ve learned all the letters! You\'re a star! &#11088;');
+ }, 500);
+ }
+ }
+
+ saveProgress() {
+ const data = {
+ completed: Array.from(this.completedLetters),
+ currentLetter: this.currentLetter,
+ lastUpdated: new Date().toISOString()
+ };
+
+ localStorage.setItem('abc-learning-progress', JSON.stringify(data));
+ console.log('Progress saved');
+ }
+
+ loadProgress() {
+ const saved = localStorage.getItem('abc-learning-progress');
+ if (!saved) return;
+
+ try {
+ const data = JSON.parse(saved);
+ this.completedLetters = new Set(data.completed || []);
+ this.currentLetter = data.currentLetter || 'A';
+
+ // Update UI
+ this.completedLetters.forEach(letter => {
+ const btn = document.querySelector(`.letter-btn[data-letter="${letter}"]`);
+ if (btn) {
+ btn.classList.add('completed');
+ }
+ });
+
+ this.updateProgress();
+ console.log('Progress loaded');
+ } catch (error) {
+ console.error('Failed to load progress:', error);
+ }
+ }
+ }
+
+ // Add pulse animation
+ const style = document.createElement('style');
+ style.textContent = `
+ @keyframes pulse {
+ 0%, 100% { transform: scale(1); }
+ 50% { transform: scale(1.05); }
+ }
+ `;
+ document.head.appendChild(style);
+
+ // Initialize when page loads
+ window.addEventListener('load', () => {
+ new ABCLearning();
+ });
+ </script>
+

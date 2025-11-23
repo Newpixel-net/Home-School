@@ -1,0 +1,637 @@
+
+
+
+ <meta>
+ <meta name="viewport">
+ <title>Science Explorer - Mia's Home School</title>
+ <style>
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);
+ min-height: 100vh;
+ padding: 20px;
+ }
+
+ .container {
+ max-width: 1000px;
+ margin: 0 auto;
+ }
+
+ .header {
+ text-align: center;
+ color: white;
+ margin-bottom: 30px;
+ }
+
+ .header h1 {
+ font-size: 3rem;
+ margin-bottom: 10px;
+ text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+ }
+
+ .back-button {
+ display: inline-block;
+ background: rgba(255, 255, 255, 0.2);
+ color: white;
+ padding: 12px 24px;
+ border-radius: 25px;
+ text-decoration: none;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ backdrop-filter: blur(10px);
+ border: 2px solid rgba(255, 255, 255, 0.3);
+ margin-bottom: 20px;
+ }
+
+ .back-button:hover {
+ background: rgba(255, 255, 255, 0.3);
+ transform: translateY(-2px);
+ }
+
+ .topics-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 20px;
+ margin-bottom: 30px;
+ }
+
+ .topic-card {
+ background: white;
+ padding: 30px;
+ border-radius: 15px;
+ text-align: center;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+ border: 3px solid transparent;
+ }
+
+ .topic-card:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+ }
+
+ .topic-card.active {
+ border-color: #4FACFE;
+ }
+
+ .topic-card .icon {
+ font-size: 4rem;
+ margin-bottom: 15px;
+ }
+
+ .topic-card .title {
+ font-size: 1.3rem;
+ font-weight: 600;
+ color: #2D3748;
+ }
+
+ .topic-card .count {
+ font-size: 0.9rem;
+ color: #718096;
+ margin-top: 5px;
+ }
+
+ .content-area {
+ background: white;
+ padding: 40px;
+ border-radius: 20px;
+ box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+ display: none;
+ min-height: 500px;
+ }
+
+ .content-area.active {
+ display: block;
+ animation: fadeIn 0.5s ease;
+ }
+
+ @keyframes fadeIn {
+ from { opacity: 0; transform: translateY(20px); }
+ to { opacity: 1; transform: translateY(0); }
+ }
+
+ .fact-card {
+ background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);
+ color: white;
+ padding: 30px;
+ border-radius: 15px;
+ margin-bottom: 20px;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+ }
+
+ .fact-card h3 {
+ font-size: 1.5rem;
+ margin-bottom: 15px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .fact-card p {
+ font-size: 1.1rem;
+ line-height: 1.6;
+ }
+
+ .experiment-section {
+ background: #F7FAFC;
+ padding: 25px;
+ border-radius: 15px;
+ margin-bottom: 20px;
+ }
+
+ .experiment-section h3 {
+ color: #2D3748;
+ margin-bottom: 15px;
+ font-size: 1.3rem;
+ }
+
+ .experiment-steps {
+ list-style: none;
+ counter-reset: step-counter;
+ }
+
+ .experiment-steps li {
+ counter-increment: step-counter;
+ margin-bottom: 15px;
+ padding-left: 40px;
+ position: relative;
+ line-height: 1.6;
+ }
+
+ .experiment-steps li::before {
+ content: counter(step-counter);
+ position: absolute;
+ left: 0;
+ width: 30px;
+ height: 30px;
+ background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: bold;
+ }
+
+ .quiz-container {
+ margin-top: 30px;
+ }
+
+ .quiz-question {
+ background: #F7FAFC;
+ padding: 25px;
+ border-radius: 15px;
+ margin-bottom: 20px;
+ }
+
+ .quiz-question h4 {
+ color: #2D3748;
+ margin-bottom: 20px;
+ font-size: 1.2rem;
+ }
+
+ .quiz-options {
+ display: grid;
+ gap: 10px;
+ }
+
+ .quiz-option {
+ background: white;
+ border: 2px solid #E2E8F0;
+ padding: 15px 20px;
+ border-radius: 10px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ font-size: 1rem;
+ }
+
+ .quiz-option:hover {
+ border-color: #4FACFE;
+ background: #EBF8FF;
+ }
+
+ .quiz-option.correct {
+ border-color: #48BB78;
+ background: #C6F6D5;
+ }
+
+ .quiz-option.wrong {
+ border-color: #F56565;
+ background: #FED7D7;
+ }
+
+ .interactive-demo {
+ background: #F7FAFC;
+ padding: 30px;
+ border-radius: 15px;
+ text-align: center;
+ margin-bottom: 20px;
+ }
+
+ .demo-canvas {
+ background: white;
+ border: 2px solid #E2E8F0;
+ border-radius: 10px;
+ margin: 20px auto;
+ display: block;
+ }
+
+ .demo-controls {
+ display: flex;
+ justify-content: center;
+ gap: 15px;
+ flex-wrap: wrap;
+ margin-top: 20px;
+ }
+
+ .demo-btn {
+ background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);
+ color: white;
+ border: none;
+ padding: 12px 25px;
+ border-radius: 10px;
+ cursor: pointer;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ }
+
+ .demo-btn:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+ }
+
+ .stats-display {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+ gap: 15px;
+ margin-top: 30px;
+ }
+
+ .stat-box {
+ background: #F7FAFC;
+ padding: 20px;
+ border-radius: 10px;
+ text-align: center;
+ }
+
+ .stat-value {
+ font-size: 2rem;
+ font-weight: bold;
+ color: #4FACFE;
+ }
+
+ .stat-label {
+ color: #718096;
+ margin-top: 5px;
+ font-size: 0.9rem;
+ }
+
+ .back-to-topics {
+ text-align: center;
+ margin-top: 30px;
+ }
+
+ .back-to-topics button {
+ background: #E2E8F0;
+ color: #2D3748;
+ border: none;
+ padding: 12px 30px;
+ border-radius: 10px;
+ cursor: pointer;
+ font-weight: 600;
+ transition: all 0.3s ease;
+ }
+
+ .back-to-topics button:hover {
+ background: #CBD5E0;
+ }
+
+ @media (max-width: 768px) {
+ .header h1 {
+ font-size: 2rem;
+ }
+
+ .content-area {
+ padding: 20px;
+ }
+ }
+ </style>
+
+
+ <div class="container">
+ <div class="header">
+ <a href="/" class="back-button">← Back to Dashboard</a>
+ <h1>🔬 Science Explorer</h1>
+ <p>Discover the wonders of science!</p>
+ </div>
+
+ <div class="topics-grid" id="topics-grid"></div>
+
+ <div class="content-area" id="content-area"></div>
+
+ <div class="stats-display">
+ <div class="stat-box">
+ <div class="stat-value" id="topics-explored">0</div>
+ <div class="stat-label">Topics Explored</div>
+ </div>
+ <div class="stat-box">
+ <div class="stat-value" id="facts-learned">0</div>
+ <div class="stat-label">Facts Learned</div>
+ </div>
+ <div class="stat-box">
+ <div class="stat-value" id="quiz-score">0%</div>
+ <div class="stat-label">Quiz Score</div>
+ </div>
+ </div>
+ </div>
+
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+ <script>
+ // Firebase configuration
+ const firebaseConfig = {
+ apiKey: "AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k",
+ authDomain: "mia-home-school-513d2.firebaseapp.com",
+ projectId: "mia-home-school-513d2",
+ storageBucket: "mia-home-school-513d2.firebasestorage.app",
+ messagingSenderId: "645973670570",
+ appId: "1:645973670570:web:78782661d182ce9e17aed3",
+ measurementId: "G-6YGP5Z1ZQX"
+ };
+
+ // Initialize Firebase
+ if (!firebase.apps.length) {
+ firebase.initializeApp(firebaseConfig);
+ }
+ const analytics = firebase.analytics();
+
+ class ScienceExplorer {
+ constructor() {
+ this.stats = {
+ topicsExplored: new Set(),
+ factsLearned: 0,
+ quizCorrect: 0,
+ quizTotal: 0
+ };
+
+ this.topics = {
+ animals: {
+ icon: '&#129409;',
+ title: 'Animals',
+ facts: [
+ { emoji: '&#128024;', title: 'Elephant Memory', text: 'Elephants have amazing memories and can remember other elephants for years!' },
+ { emoji: '&#129426;', title: 'Giraffe Height', text: 'Giraffes are the tallest animals on Earth. Their necks alone can be 6 feet long!' },
+ { emoji: '&#128044;', title: 'Dolphin Intelligence', text: 'Dolphins are very smart! They can recognize themselves in mirrors and use tools.' },
+ { emoji: '&#129419;', title: 'Butterfly Life', text: 'Butterflies taste with their feet! They stand on their food to taste it.' }
+ ],
+ quiz: [
+ { question: 'What is the tallest animal on Earth?', options: ['Elephant', 'Giraffe', 'Bear', 'Lion'], correct: 1 },
+ { question: 'How do butterflies taste their food?', options: ['With their mouth', 'With their feet', 'With their wings', 'They cannot taste'], correct: 1 }
+ ]
+ },
+ space: {
+ icon: '&#128640;',
+ title: 'Space',
+ facts: [
+ { emoji: '&#9728;&#65039;', title: 'The Sun', text: 'The Sun is a star! It\'s so big that over 1 million Earths could fit inside it!' },
+ { emoji: '&#127769;', title: 'The Moon', text: 'The Moon has no air or water. Footprints left by astronauts will stay there forever!' },
+ { emoji: '&#11088;', title: 'Stars', text: 'Stars are giant balls of hot gas. They twinkle because of Earth\'s atmosphere!' },
+ { emoji: '&#129680;', title: 'Saturn', text: 'Saturn has beautiful rings made of ice and rock. It could float in water!' }
+ ],
+ quiz: [
+ { question: 'What is the Sun?', options: ['A planet', 'A star', 'A moon', 'A comet'], correct: 1 },
+ { question: 'Why do astronaut footprints stay on the Moon forever?', options: ['Because it\'s cold', 'Because there\'s no wind or water', 'Because of magic', 'They don\'t stay'], correct: 1 }
+ ]
+ },
+ plants: {
+ icon: '&#127793;',
+ title: 'Plants',
+ facts: [
+ { emoji: '&#127795;', title: 'Trees & Oxygen', text: 'Trees make oxygen for us to breathe! One tree can make enough oxygen for 2 people!' },
+ { emoji: '&#127803;', title: 'Sunflowers', text: 'Sunflowers turn to face the sun as it moves across the sky!' },
+ { emoji: '&#127797;', title: 'Cacti', text: 'Cacti store water in their thick stems. They can survive months without rain!' },
+ { emoji: '&#127802;', title: 'Flowers', text: 'Flowers have bright colors and sweet smells to attract bees and butterflies!' }
+ ],
+ quiz: [
+ { question: 'What do trees make for us to breathe?', options: ['Carbon dioxide', 'Oxygen', 'Nitrogen', 'Water'], correct: 1 },
+ { question: 'Where do cacti store water?', options: ['In their roots', 'In their flowers', 'In their stems', 'They don\'t store water'], correct: 2 }
+ ]
+ },
+ weather: {
+ icon: '&#127752;',
+ title: 'Weather',
+ facts: [
+ { emoji: '&#9889;', title: 'Lightning', text: 'Lightning is electricity in the sky! It\'s hotter than the surface of the Sun!' },
+ { emoji: '&#127752;', title: 'Rainbows', text: 'Rainbows happen when sunlight shines through rain droplets. They have 7 colors!' },
+ { emoji: '&#10052;&#65039;', title: 'Snowflakes', text: 'Every snowflake is unique! No two snowflakes are exactly the same!' },
+ { emoji: '&#9729;&#65039;', title: 'Clouds', text: 'Clouds are made of tiny water droplets floating in the air!' }
+ ],
+ quiz: [
+ { question: 'How many colors does a rainbow have?', options: ['5', '6', '7', '8'], correct: 2 },
+ { question: 'What are clouds made of?', options: ['Cotton', 'Smoke', 'Water droplets', 'Sugar'], correct: 2 }
+ ]
+ },
+ body: {
+ icon: '&#129728;',
+ title: 'Human Body',
+ facts: [
+ { emoji: '&#128147;', title: 'Your Heart', text: 'Your heart beats about 100,000 times every day! It pumps blood through your body!' },
+ { emoji: '&#129504;', title: 'Your Brain', text: 'Your brain is the control center of your body. It helps you think, move, and feel!' },
+ { emoji: '&#129460;', title: 'Your Bones', text: 'You have 206 bones in your body! They protect your organs and help you move!' },
+ { emoji: '&#128064;', title: 'Your Eyes', text: 'Your eyes can see millions of colors! They work like cameras to capture images!' }
+ ],
+ quiz: [
+ { question: 'How many times does your heart beat every day?', options: ['1,000', '10,000', '100,000', '1,000,000'], correct: 2 },
+ { question: 'How many bones do you have?', options: ['100', '150', '206', '300'], correct: 2 }
+ ]
+ },
+ experiments: {
+ icon: '&#9879;&#65039;',
+ title: 'Experiments',
+ facts: [
+ { emoji: '&#127880;', title: 'Air Pressure', text: 'Air pushes on everything! That\'s why balloons inflate and why you can drink through a straw!' },
+ { emoji: '&#129522;', title: 'Magnets', text: 'Magnets can push and pull without touching! They attract iron and steel!' },
+ { emoji: '&#128161;', title: 'Electricity', text: 'Electricity flows through wires to power lights, computers, and toys!' },
+ { emoji: '&#127754;', title: 'Water', text: 'Water can be solid (ice), liquid (water), or gas (steam)! It changes with temperature!' }
+ ],
+ quiz: [
+ { question: 'What do magnets attract?', options: ['Wood', 'Iron and steel', 'Plastic', 'Paper'], correct: 1 },
+ { question: 'What are the three states of water?', options: ['Hot, cold, warm', 'Solid, liquid, gas', 'Big, medium, small', 'Clear, blue, white'], correct: 1 }
+ ]
+ }
+ };
+
+ this.loadProgress();
+ this.init();
+ }
+
+ init() {
+ this.renderTopics();
+ this.updateStats();
+
+ analytics.logEvent('page_view', {
+ page_title: 'Science Explorer',
+ page_location: window.location.href
+ });
+ }
+
+ renderTopics() {
+ const grid = document.getElementById('topics-grid');
+ grid.innerHTML = '';
+
+ Object.entries(this.topics).forEach(([key, topic]) => {
+ const card = document.createElement('div');
+ card.className = 'topic-card';
+ const factCount = topic.facts.length;
+
+ card.innerHTML = `
+ <div class="icon">${topic.icon}</div>
+ <div class="title">${topic.title}</div>
+ <div class="count">${factCount} facts</div>
+ `;
+
+ card.addEventListener('click', () => this.showTopic(key, topic));
+ grid.appendChild(card);
+ });
+ }
+
+ showTopic(topicKey, topic) {
+ this.stats.topicsExplored.add(topicKey);
+ this.updateStats();
+ this.saveProgress();
+
+ const contentArea = document.getElementById('content-area');
+ contentArea.className = 'content-area active';
+
+ let html = `<h2 style="text-align: center; color: #2D3748; margin-bottom: 30px;">${topic.icon} ${topic.title}</h2>`;
+
+ // Add facts
+ topic.facts.forEach(fact => {
+ html += `
+ <div class="fact-card">
+ <h3>${fact.emoji} ${fact.title}</h3>
+ <p>${fact.text}</p>
+ </div>
+ `;
+ });
+
+ // Add quiz
+ if (topic.quiz && topic.quiz.length > 0) {
+ html += `<div class="quiz-container"><h3 style="color: #2D3748; margin-bottom: 20px;">Test Your Knowledge!</h3>`;
+
+ topic.quiz.forEach((q, qIndex) => {
+ html += `
+ <div class="quiz-question">
+ <h4>${q.question}</h4>
+ <div class="quiz-options">
+ `;
+
+ q.options.forEach((option, oIndex) => {
+ html += `
+ <div class="quiz-option" onclick="scienceExplorer.checkAnswer(${qIndex}, ${oIndex}, ${q.correct}, this)">
+ ${option}
+ </div>
+ `;
+ });
+
+ html += `
+ </div>
+ </div>
+ `;
+ });
+
+ html += `</div>`;
+ }
+
+ html += `
+ <div class="back-to-topics">
+ <button onclick="scienceExplorer.backToTopics()">&larr; Back to Topics</button>
+ </div>
+ `;
+
+ contentArea.innerHTML = html;
+
+ analytics.logEvent('select_content', {
+ content_type: 'science_topic',
+ item_id: topicKey
+ });
+ }
+
+ checkAnswer(questionIndex, selectedIndex, correctIndex, element) {
+ this.stats.quizTotal++;
+
+ const allOptions = element.parentElement.querySelectorAll('.quiz-option');
+ allOptions.forEach(opt => opt.style.pointerEvents = 'none');
+
+ if (selectedIndex === correctIndex) {
+ element.classList.add('correct');
+ this.stats.quizCorrect++;
+ this.stats.factsLearned++;
+
+ analytics.logEvent('quiz_answer', {
+ result: 'correct'
+ });
+ } else {
+ element.classList.add('wrong');
+ allOptions[correctIndex].classList.add('correct');
+
+ analytics.logEvent('quiz_answer', {
+ result: 'incorrect'
+ });
+ }
+
+ this.updateStats();
+ this.saveProgress();
+ }
+
+ backToTopics() {
+ document.getElementById('content-area').classList.remove('active');
+ }
+
+ updateStats() {
+ document.getElementById('topics-explored').textContent = this.stats.topicsExplored.size;
+ document.getElementById('facts-learned').textContent = this.stats.factsLearned;
+
+ const score = this.stats.quizTotal > 0
+ ? Math.round((this.stats.quizCorrect / this.stats.quizTotal) * 100)
+ : 0;
+ document.getElementById('quiz-score').textContent = score + '%';
+ }
+
+ saveProgress() {
+ const data = {
+ topicsExplored: Array.from(this.stats.topicsExplored),
+ factsLearned: this.stats.factsLearned,
+ quizCorrect: this.stats.quizCorrect,
+ quizTotal: this.stats.quizTotal
+ };
+ localStorage.setItem('science-explorer-progress', JSON.stringify(data));
+ }
+
+ loadProgress() {
+ const saved = localStorage.getItem('science-explorer-progress');
+ if (saved) {
+ const data = JSON.parse(saved);
+ this.stats.topicsExplored = new Set(data.topicsExplored || []);
+ this.stats.factsLearned = data.factsLearned || 0;
+ this.stats.quizCorrect = data.quizCorrect || 0;
+ this.stats.quizTotal = data.quizTotal || 0;
+ }
+ }
+ }
+
+ // Initialize
+ let scienceExplorer;
+ window.addEventListener('load', () => {
+ scienceExplorer = new ScienceExplorer();
+ console.log('&#128300; Science Explorer loaded successfully!');
+ });
+ </script>
+

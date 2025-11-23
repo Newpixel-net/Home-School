@@ -1,0 +1,446 @@
+
+
+
+ <meta>
+ <meta name="viewport">
+ <title>🎨 Coloring Book - Mia's Home School</title>
+a
+ <!-- Firebase SDK -->
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+ <style>
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+ min-height: 100vh;
+ padding: 20px;
+ }
+
+ .header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ background: white;
+ padding: 15px 25px;
+ border-radius: 15px;
+ margin-bottom: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+
+ .header h1 {
+ font-size: 1.5rem;
+ color: #2d3748;
+ }
+
+ .btn {
+ padding: 10px 20px;
+ border: none;
+ border-radius: 10px;
+ font-weight: 600;
+ cursor: pointer;
+ transition: all 0.2s;
+ }
+
+ .btn-back {
+ background: #e2e8f0;
+ color: #2d3748;
+ }
+
+ .btn-back:hover {
+ background: #cbd5e0;
+ }
+
+ .btn-primary {
+ background: linear-gradient(135deg, #667eea, #764ba2);
+ color: white;
+ margin-left: 10px;
+ }
+
+ .btn-primary:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+ }
+
+ .workspace {
+ display: grid;
+ grid-template-columns: 200px 1fr;
+ gap: 20px;
+ max-width: 1400px;
+ margin: 0 auto;
+ }
+
+ .tools-panel {
+ background: white;
+ border-radius: 15px;
+ padding: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+
+ .tools-panel h3 {
+ margin-bottom: 15px;
+ color: #2d3748;
+ font-size: 1rem;
+ }
+
+ .color-palette {
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ gap: 8px;
+ margin-bottom: 20px;
+ }
+
+ .color-swatch {
+ width: 100%;
+ aspect-ratio: 1;
+ border-radius: 8px;
+ cursor: pointer;
+ border: 3px solid transparent;
+ transition: all 0.2s;
+ }
+
+ .color-swatch:hover {
+ transform: scale(1.1);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+ }
+
+ .color-swatch.active {
+ border-color: #2d3748;
+ transform: scale(1.15);
+ }
+
+ .brush-sizes {
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ margin-bottom: 20px;
+ }
+
+ .brush-btn {
+ padding: 10px;
+ background: #f7fafc;
+ border: 2px solid #e2e8f0;
+ border-radius: 8px;
+ cursor: pointer;
+ transition: all 0.2s;
+ font-weight: 600;
+ }
+
+ .brush-btn:hover {
+ background: #edf2f7;
+ }
+
+ .brush-btn.active {
+ background: #667eea;
+ color: white;
+ border-color: #667eea;
+ }
+
+ .tool-btn {
+ width: 100%;
+ margin-bottom: 10px;
+ }
+
+ .canvas-area {
+ background: white;
+ border-radius: 15px;
+ padding: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ }
+
+ #drawing-canvas {
+ border: 2px solid #e2e8f0;
+ border-radius: 10px;
+ cursor: crosshair;
+ background: white;
+ max-width: 100%;
+ box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
+
+ @media (max-width: 768px) {
+ .workspace {
+ grid-template-columns: 1fr;
+ }
+
+ .tools-panel {
+ order: 2;
+ }
+
+ .color-palette {
+ grid-template-columns: repeat(8, 1fr);
+ }
+ }
+ </style>
+
+
+ <div class="header">
+ <h1>🎨 Coloring Book</h1>
+ <div>
+ <button class="btn btn-back">← Back</button>
+ <button class="btn btn-primary" id="save-btn">💾 Save</button>
+ </div>
+ </div>
+
+ <div class="workspace">
+ <aside class="tools-panel">
+ <h3>Colors</h3>
+ <div class="color-palette" id="color-palette"></div>
+
+ <h3>Brush Size</h3>
+ <div class="brush-sizes">
+ <button class="brush-btn" data-size="2">Small</button>
+ <button class="brush-btn active" data-size="5">Medium</button>
+ <button class="brush-btn" data-size="10">Large</button>
+ <button class="brush-btn" data-size="20">Extra Large</button>
+ </div>
+
+ <h3>Tools</h3>
+ <button class="btn btn-primary tool-btn" id="clear-btn">🗑️ Clear Canvas</button>
+ <button class="btn btn-primary tool-btn" id="undo-btn">↩️ Undo</button>
+ </aside>
+
+ <main class="canvas-area">
+ <canvas id="drawing-canvas" width="800" height="600"></canvas>
+ </main>
+ </div>
+
+ <script>
+ // Coloring Book Application
+ class ColoringBook {
+ constructor() {
+ this.canvas = document.getElementById('drawing-canvas');
+ this.ctx = this.canvas.getContext('2d');
+ this.isDrawing = false;
+ this.currentColor = '#FF6B6B';
+ this.brushSize = 5;
+ this.history = [];
+ this.maxHistory = 20;
+
+ this.init();
+ }
+
+ init() {
+ console.log('&#127912; Coloring Book initializing...');
+
+ // Setup canvas
+ this.setupCanvas();
+
+ // Generate color palette
+ this.generateColorPalette();
+
+ // Setup event listeners
+ this.setupEventListeners();
+
+ console.log('&#9989; Coloring Book ready!');
+ }
+
+ setupCanvas() {
+ // Set canvas size to be responsive
+ const container = this.canvas.parentElement;
+ const maxWidth = Math.min(800, container.clientWidth - 40);
+ const aspectRatio = 600 / 800;
+
+ this.canvas.width = maxWidth;
+ this.canvas.height = maxWidth * aspectRatio;
+
+ // Set drawing styles
+ this.ctx.lineCap = 'round';
+ this.ctx.lineJoin = 'round';
+
+ // Fill with white background
+ this.ctx.fillStyle = 'white';
+ this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+ // Save initial state
+ this.saveToHistory();
+ }
+
+ generateColorPalette() {
+ const colors = [
+ '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+ '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
+ '#F8B195', '#F67280', '#C06C84', '#6C5B7B',
+ '#355C7D', '#2C3E50', '#34495E', '#ECF0F1',
+ '#E74C3C', '#3498DB', '#2ECC71', '#F39C12',
+ '#9B59B6', '#1ABC9C', '#E67E22', '#95A5A6'
+ ];
+
+ const palette = document.getElementById('color-palette');
+ palette.innerHTML = '';
+
+ colors.forEach((color, index) => {
+ const swatch = document.createElement('div');
+ swatch.className = 'color-swatch' + (index === 0 ? ' active' : '');
+ swatch.style.backgroundColor = color;
+ swatch.dataset.color = color;
+
+ swatch.addEventListener('click', () => {
+ document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+ swatch.classList.add('active');
+ this.currentColor = color;
+ console.log(`Color selected: ${color}`);
+ });
+
+ palette.appendChild(swatch);
+ });
+ }
+
+ setupEventListeners() {
+ // Mouse events
+ this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
+ this.canvas.addEventListener('mousemove', this.draw.bind(this));
+ this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
+ this.canvas.addEventListener('mouseout', this.stopDrawing.bind(this));
+
+ // Touch events for mobile
+ this.canvas.addEventListener('touchstart', (e) => {
+ e.preventDefault();
+ const touch = e.touches[0];
+ const rect = this.canvas.getBoundingClientRect();
+ const mouseEvent = new MouseEvent('mousedown', {
+ clientX: touch.clientX,
+ clientY: touch.clientY
+ });
+ this.canvas.dispatchEvent(mouseEvent);
+ });
+
+ this.canvas.addEventListener('touchmove', (e) => {
+ e.preventDefault();
+ const touch = e.touches[0];
+ const mouseEvent = new MouseEvent('mousemove', {
+ clientX: touch.clientX,
+ clientY: touch.clientY
+ });
+ this.canvas.dispatchEvent(mouseEvent);
+ });
+
+ this.canvas.addEventListener('touchend', (e) => {
+ e.preventDefault();
+ const mouseEvent = new MouseEvent('mouseup', {});
+ this.canvas.dispatchEvent(mouseEvent);
+ });
+
+ // Brush size buttons
+ document.querySelectorAll('.brush-btn').forEach(btn => {
+ btn.addEventListener('click', () => {
+ document.querySelectorAll('.brush-btn').forEach(b => b.classList.remove('active'));
+ btn.classList.add('active');
+ this.brushSize = parseInt(btn.dataset.size);
+ console.log(`Brush size: ${this.brushSize}`);
+ });
+ });
+
+ // Tool buttons
+ document.getElementById('clear-btn').addEventListener('click', () => {
+ if (confirm('Are you sure you want to clear your drawing?')) {
+ this.clearCanvas();
+ }
+ });
+
+ document.getElementById('undo-btn').addEventListener('click', () => {
+ this.undo();
+ });
+
+ document.getElementById('save-btn').addEventListener('click', () => {
+ this.saveDrawing();
+ });
+ }
+
+ startDrawing(e) {
+ this.isDrawing = true;
+ const rect = this.canvas.getBoundingClientRect();
+ const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+ const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
+
+ this.ctx.beginPath();
+ this.ctx.moveTo(x, y);
+ }
+
+ draw(e) {
+ if (!this.isDrawing) return;
+
+ const rect = this.canvas.getBoundingClientRect();
+ const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+ const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
+
+ this.ctx.strokeStyle = this.currentColor;
+ this.ctx.lineWidth = this.brushSize;
+ this.ctx.lineTo(x, y);
+ this.ctx.stroke();
+ }
+
+ stopDrawing() {
+ if (!this.isDrawing) return;
+ this.isDrawing = false;
+ this.ctx.closePath();
+ this.saveToHistory();
+ }
+
+ saveToHistory() {
+ const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+ this.history.push(imageData);
+
+ // Limit history size
+ if (this.history.length > this.maxHistory) {
+ this.history.shift();
+ }
+ }
+
+ undo() {
+ if (this.history.length <= 1) {
+ alert('Nothing to undo!');
+ return;
+ }
+
+ this.history.pop(); // Remove current state
+ const previousState = this.history[this.history.length - 1];
+ this.ctx.putImageData(previousState, 0, 0);
+ console.log('Undo performed');
+ }
+
+ clearCanvas() {
+ this.ctx.fillStyle = 'white';
+ this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+ this.history = [];
+ this.saveToHistory();
+ console.log('Canvas cleared');
+ }
+
+ saveDrawing() {
+ const dataURL = this.canvas.toDataURL('image/png');
+ const link = document.createElement('a');
+ link.download = `mia-coloring-${Date.now()}.png`;
+ link.href = dataURL;
+ link.click();
+
+ console.log('Drawing saved!');
+
+ // Show success message
+ alert('&#127881; Your artwork has been saved!');
+
+ // Track with Firebase
+ if (window.firebaseManager && window.firebaseManager.initialized) {
+ window.firebaseManager.trackEvent('drawing_saved', {
+ timestamp: new Date().toISOString()
+ });
+ }
+ }
+ }
+
+ // Initialize when page loads
+ window.addEventListener('load', () => {
+ new ColoringBook();
+ });
+ </script>
+

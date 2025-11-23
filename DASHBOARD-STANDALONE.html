@@ -2168,7 +2168,9 @@
  // Update avatar
  const avatar = document.getElementById('user-avatar');
  if (avatar) {
- avatar.textContent = userData.avatar || '🎨';
+ // Always decode HTML entities to ensure emoji display
+ const avatarEmoji = decodeHTMLEntities(userData.avatar || '🎨');
+ avatar.textContent = avatarEmoji;
  avatar.style.cursor = 'pointer';
  avatar.title = 'Click to change avatar';
  avatar.onclick = showAvatarPicker;

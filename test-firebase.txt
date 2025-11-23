@@ -1,0 +1,307 @@
+
+
+
+ <meta>
+ <meta name="viewport">
+ <title>Firebase Connection Test - Mia's Home School</title>
+ <style>
+ * { margin: 0; padding: 0; box-sizing: border-box; }
+ body {
+ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+ min-height: 100vh;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ padding: 20px;
+ }
+ .test-container {
+ background: white;
+ border-radius: 20px;
+ padding: 40px;
+ max-width: 600px;
+ width: 100%;
+ box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+ }
+ h1 { color: #667eea; margin-bottom: 10px; font-size: 2rem; }
+ .subtitle { color: #718096; margin-bottom: 30px; }
+ .test-section {
+ margin-bottom: 25px;
+ padding: 20px;
+ border-radius: 10px;
+ background: #f7fafc;
+ border-left: 4px solid #cbd5e0;
+ }
+ .test-section h3 { color: #2d3748; margin-bottom: 10px; font-size: 1.1rem; }
+ .status {
+ display: inline-block;
+ padding: 5px 15px;
+ border-radius: 20px;
+ font-size: 0.9rem;
+ font-weight: 600;
+ margin-bottom: 10px;
+ }
+ .status.pending { background: #fff5e1; color: #f6ad55; }
+ .status.testing { background: #e1f5ff; color: #4299e1; animation: pulse 2s infinite; }
+ .status.success { background: #e1f5e1; color: #48bb78; }
+ .status.error { background: #ffe1e1; color: #f56565; }
+ @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+ .detail {
+ font-size: 0.9rem;
+ color: #4a5568;
+ margin-top: 10px;
+ padding: 10px;
+ background: white;
+ border-radius: 5px;
+ font-family: monospace;
+ word-wrap: break-word;
+ }
+ .button-group { display: flex; gap: 10px; margin-top: 30px; }
+ button {
+ flex: 1;
+ padding: 15px;
+ border: none;
+ border-radius: 10px;
+ font-size: 1rem;
+ font-weight: 600;
+ cursor: pointer;
+ transition: all 0.3s;
+ }
+ .btn-primary {
+ background: linear-gradient(135deg, #667eea, #764ba2);
+ color: white;
+ }
+ .btn-primary:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+ }
+ .btn-secondary { background: #e2e8f0; color: #2d3748; }
+ .btn-secondary:hover { background: #cbd5e0; }
+ .loading {
+ display: inline-block;
+ width: 20px;
+ height: 20px;
+ border: 3px solid rgba(255, 255, 255, 0.3);
+ border-top-color: white;
+ border-radius: 50%;
+ animation: spin 0.8s linear infinite;
+ }
+ @keyframes spin { to { transform: rotate(360deg); } }
+ .emoji { font-size: 2rem; margin-bottom: 10px; display: block; }
+ </style>
+
+
+ <div class="test-container">
+ <span class="emoji">🔥</span>
+ <h1>Firebase Connection Test</h1>
+ <p class="subtitle">Testing all Firebase services for Mia's Home School</p>
+
+ <div class="test-section" id="test-sdk">
+ <h3>📦 Firebase SDK</h3>
+ <span class="status pending">Pending</span>
+ <div class="detail" id="detail-sdk">Waiting to test...</div>
+ </div>
+
+ <div class="test-section" id="test-app">
+ <h3>🔧 Firebase App</h3>
+ <span class="status pending">Pending</span>
+ <div class="detail" id="detail-app">Waiting to test...</div>
+ </div>
+
+ <div class="test-section" id="test-auth">
+ <h3>🔐 Authentication</h3>
+ <span class="status pending">Pending</span>
+ <div class="detail" id="detail-auth">Waiting to test...</div>
+ </div>
+
+ <div class="test-section" id="test-firestore">
+ <h3>💾 Firestore Database</h3>
+ <span class="status pending">Pending</span>
+ <div class="detail" id="detail-firestore">Waiting to test...</div>
+ </div>
+
+ <div class="test-section" id="test-storage">
+ <h3>📦 Cloud Storage</h3>
+ <span class="status pending">Pending</span>
+ <div class="detail" id="detail-storage">Waiting to test...</div>
+ </div>
+
+ <div class="test-section" id="test-analytics">
+ <h3>📊 Analytics</h3>
+ <span class="status pending">Pending</span>
+ <div class="detail" id="detail-analytics">Waiting to test...</div>
+ </div>
+
+ <div class="button-group">
+ <button class="btn-primary" id="run-tests-btn">
+ <span id="test-btn-text">Run Tests</span>
+ </button>
+ <button class="btn-secondary">
+ Go to Dashboard
+ </button>
+ </div>
+ </div>
+
+ <!-- Firebase SDK -->
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+
+ <!-- Config -->
+ <script>
+ window.firebaseConfig = {
+ apiKey: "AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k",
+ authDomain: "mia-home-school-513d2.firebaseapp.com",
+ projectId: "mia-home-school-513d2",
+ storageBucket: "mia-home-school-513d2.firebasestorage.app",
+ messagingSenderId: "645973670570",
+ appId: "1:645973670570:web:78782661d182ce9e17aed3",
+ measurementId: "G-6YGP5Z1ZQX"
+ };
+ </script>
+
+ <!-- Test Script -->
+ <script>
+ let testResults = {};
+
+ function updateStatus(testId, status, message) {
+ const section = document.getElementById(`test-${testId}`);
+ if (!section) {
+ console.error(`Section not found: test-${testId}`);
+ return;
+ }
+
+ const statusEl = section.querySelector('.status');
+ const detailEl = document.getElementById(`detail-${testId}`);
+
+ statusEl.className = `status ${status}`;
+ statusEl.textContent = {
+ 'pending': 'Pending',
+ 'testing': 'Testing...',
+ 'success': 'Success &#10003;',
+ 'error': 'Error &#10007;'
+ }[status];
+
+ detailEl.textContent = message;
+
+ if (status === 'success') {
+ section.style.borderLeftColor = '#48bb78';
+ } else if (status === 'error') {
+ section.style.borderLeftColor = '#f56565';
+ }
+ }
+
+ async function runTests() {
+ console.log('&#128293; Button clicked! Starting tests...');
+
+ const btn = document.getElementById('test-btn-text');
+ btn.innerHTML = '<span class="loading"></span>';
+
+ try {
+ // Test 0: Check if Firebase SDK loaded
+ updateStatus('sdk', 'testing', 'Checking if Firebase SDK loaded...');
+ await sleep(300);
+
+ if (typeof firebase === 'undefined') {
+ updateStatus('sdk', 'error', 'Firebase SDK not loaded! Check internet connection.');
+ btn.textContent = 'SDK Not Loaded';
+ return;
+ }
+
+ testResults.sdk = true;
+ updateStatus('sdk', 'success', `Firebase SDK version: ${firebase.SDK_VERSION || '9.22.0'}`);
+ console.log('&#10003; Firebase SDK loaded');
+
+ // Test 1: Firebase App Initialization
+ updateStatus('app', 'testing', 'Initializing Firebase...');
+ await sleep(500);
+
+ const app = firebase.initializeApp(window.firebaseConfig);
+ testResults.app = true;
+ updateStatus('app', 'success', `Project ID: ${app.options.projectId}`);
+ console.log('&#10003; Firebase App initialized');
+
+ // Test 2: Authentication
+ updateStatus('auth', 'testing', 'Checking Authentication...');
+ await sleep(500);
+
+ const auth = firebase.auth();
+ testResults.auth = true;
+ updateStatus('auth', 'success', 'Auth service ready');
+ console.log('&#10003; Authentication available');
+
+ // Test 3: Firestore
+ updateStatus('firestore', 'testing', 'Connecting to Firestore...');
+ await sleep(500);
+
+ const db = firebase.firestore();
+ await db.collection('_test').doc('connection').set({
+ timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+ message: 'Test successful'
+ });
+
+ testResults.firestore = true;
+ updateStatus('firestore', 'success', 'Database connected. Read/write working!');
+ console.log('&#10003; Firestore connected');
+
+ // Clean up
+ await db.collection('_test').doc('connection').delete();
+
+ // Test 4: Storage
+ updateStatus('storage', 'testing', 'Checking Storage...');
+ await sleep(500);
+
+ const storage = firebase.storage();
+ testResults.storage = true;
+ updateStatus('storage', 'success', `Storage bucket: ${storage.app.options.storageBucket}`);
+ console.log('&#10003; Storage available');
+
+ // Test 5: Analytics
+ updateStatus('analytics', 'testing', 'Initializing Analytics...');
+ await sleep(500);
+
+ const analytics = firebase.analytics();
+ analytics.logEvent('test_connection');
+ testResults.analytics = true;
+ updateStatus('analytics', 'success', 'Analytics tracking events');
+ console.log('&#10003; Analytics tracking');
+
+ // Summary
+ const allPassed = Object.values(testResults).every(v => v);
+ btn.textContent = allPassed ? '&#127881; All Tests Passed!' : '&#9888;&#65039; Some Failed';
+
+ if (allPassed) {
+ setTimeout(() => {
+ if (confirm('&#127881; Firebase is fully configured!\n\nGo to dashboard?')) {
+ window.location.href = '/';
+ }
+ }, 1000);
+ }
+
+ } catch (error) {
+ console.error('&#10060; Test error:', error);
+ btn.textContent = 'Error - Check Console';
+ updateStatus('app', 'error', error.message);
+ }
+ }
+
+ function sleep(ms) {
+ return new Promise(resolve => setTimeout(resolve, ms));
+ }
+
+ // Add button click handler
+ document.getElementById('run-tests-btn').addEventListener('click', function() {
+ console.log('Button clicked!');
+ runTests();
+ });
+
+ // Log when page loads
+ window.addEventListener('load', () => {
+ console.log('&#9989; Test page loaded');
+ console.log('Firebase SDK available:', typeof firebase !== 'undefined');
+ console.log('Click "Run Tests" to start');
+ });
+ </script>
+

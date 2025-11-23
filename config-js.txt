@@ -1,0 +1,35 @@
+<script>
+// Firebase Configuration
+const firebaseConfig = {
+ apiKey: "AIzaSyBlqcPJaO0-JXSFKi__rwYALR9PgBhT8-k",
+ authDomain: "mia-home-school-513d2.firebaseapp.com",
+ projectId: "mia-home-school-513d2",
+ storageBucket: "mia-home-school-513d2.firebasestorage.app",
+ messagingSenderId: "645973670570",
+ appId: "1:645973670570:web:78782661d182ce9e17aed3",
+ measurementId: "G-6YGP5Z1ZQX"
+};
+
+const appConfig = {
+ appName: "Mia's Home School",
+ version: "1.0.0",
+ environment: "development",
+ features: {
+ offlineMode: true,
+ analytics: true,
+ debugMode: true,
+ parentalControls: true,
+ multiplayer: false
+ },
+ modules: {
+ coloringBook: { enabled: true, maxCanvasSize: 2048 },
+ abcLearning: { enabled: true, voiceEnabled: true }
+ }
+};
+
+// Expose globally
+window.firebaseConfig = firebaseConfig;
+window.appConfig = appConfig;
+
+console.log('&#9989; Config loaded');
+</script>

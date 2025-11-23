@@ -1,0 +1,54 @@
+<script>
+// Firebase Manager for Method B
+class FirebaseManager {
+ constructor() {
+ this.app = null;
+ this.auth = null;
+ this.db = null;
+ this.storage = null;
+ this.analytics = null;
+ this.initialized = false;
+ }
+
+ async init() {
+ try {
+ MiaDebug.log('FIREBASE', 'Initializing Firebase...');
+
+ // Initialize Firebase app
+ this.app = firebase.initializeApp(window.firebaseConfig);
+ MiaDebug.success('FIREBASE', 'App initialized');
+
+ // Initialize services
+ this.auth = firebase.auth();
+ this.db = firebase.firestore();
+ this.storage = firebase.storage();
+ this.analytics = firebase.analytics();
+
+ // Enable offline persistence
+ await this.db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+ if (err.code === 'failed-precondition') {
+ MiaDebug.warn('FIREBASE', 'Multiple tabs open');
+ }
+ });
+
+ this.initialized = true;
+ MiaDebug.success('FIREBASE', 'All services ready!');
+
+ return true;
+ } catch (error) {
+ MiaDebug.error('FIREBASE', error);
+ return false;
+ }
+ }
+
+ trackEvent(name, params = {}) {
+ if (this.analytics) {
+ this.analytics.logEvent(name, params);
+ MiaDebug.log('FIREBASE', `Event tracked: ${name}`, params);
+ }
+ }
+}
+
+window.firebaseManager = new FirebaseManager();
+console.log('&#9989; Firebase manager loaded');
+</script>

@@ -1,0 +1,50 @@
+<script>
+// Simplified Debug System for Method B
+class MiaDebug {
+ static log(category, message, data) {
+ const color = {
+ 'CORE': '#FF6B6B',
+ 'FIREBASE': '#4ECDC4',
+ 'MODULE': '#95E1D3',
+ 'PERFORMANCE': '#FDCB6E'
+ }[category] || '#95A5A6';
+
+ console.log(
+ `%c[${category}]%c ${message}`,
+ `background: ${color}; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;`,
+ 'color: #2C3E50;',
+ data || ''
+ );
+ }
+
+ static success(category, message, data) {
+ console.log(
+ `%c&#10003; [${category}]%c ${message}`,
+ 'background: #00B894; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;',
+ 'color: #2C3E50;',
+ data || ''
+ );
+ }
+
+ static error(category, error, context) {
+ console.error(
+ `%c[ERROR: ${category}]%c ${error.message || error}`,
+ 'background: #D63031; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;',
+ 'color: #2C3E50;'
+ );
+ if (context) console.error('Context:', context);
+ }
+
+ static warn(category, message, data) {
+ console.warn(
+ `%c[WARNING: ${category}]%c ${message}`,
+ 'background: #FDCB6E; color: #2C3E50; padding: 2px 6px; border-radius: 3px; font-weight: bold;',
+ 'color: #2C3E50;',
+ data || ''
+ );
+ }
+}
+
+window.MiaDebug = MiaDebug;
+console.log('&#9989; Debug system loaded');
+</script>

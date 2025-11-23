@@ -899,7 +899,7 @@
  const storage = firebase.storage();
  const analytics = firebase.analytics();
 
- console.log('✅ Firebase initialized');
+ console.log(String.fromCodePoint(0x2705) + ' Firebase initialized');
  </script>
 
 
@@ -1437,7 +1437,7 @@
  auth.onAuthStateChanged(async (user) => {
  if (user) {
  currentUser = user;
- console.log('✅ User signed in:', user.email);
+ console.log(String.fromCodePoint(0x2705) + ' User signed in:', user.email);
  await loadUserData(user.uid);
 
  // Update streak on login
@@ -1576,7 +1576,7 @@
 
  try {
  await auth.signInWithEmailAndPassword(email, password);
- console.log('✅ Sign in successful');
+ console.log(String.fromCodePoint(0x2705) + ' Sign in successful');
  // Auth state listener will handle UI updates
  } catch (error) {
  console.error('Sign in error:', error);
@@ -1665,7 +1665,7 @@
  try {
  const userCredential = await auth.createUserWithEmailAndPassword(email, password);
  await userCredential.user.updateProfile({ displayName: name });
- console.log('✅ Account created successfully for:', name);
+ console.log(String.fromCodePoint(0x2705) + ' Account created successfully for:', name);
 
  // Show success message
  document.getElementById('signup-success').style.display = 'block';
@@ -1710,7 +1710,7 @@
  async function handleSignOut() {
  try {
  await auth.signOut();
- console.log('✅ User signed out');
+ console.log(String.fromCodePoint(0x2705) + ' User signed out');
  } catch (error) {
  console.error('Sign out error:', error);
  alert('Sign out failed: ' + error.message);
@@ -1736,30 +1736,30 @@
 
  // Migrate old HTML entity avatars to actual emojis
  if (userData.avatar && userData.avatar.includes('&#')) {
- console.log('🔄 Migrating avatar from HTML entity to emoji');
+ console.log(String.fromCodePoint(0x1F504) + ' Migrating avatar from HTML entity to emoji');
  userData.avatar = decodeHTMLEntities(userData.avatar);
 
  // Update database with actual emoji
  await db.collection('users').doc(userId).update({
  avatar: userData.avatar
  });
- console.log('✅ Avatar migrated to:', userData.avatar);
+ console.log(String.fromCodePoint(0x2705) + ' Avatar migrated to:', userData.avatar);
  }
 
- console.log('✅ User data loaded:', userData);
+ console.log(String.fromCodePoint(0x2705) + ' User data loaded:', userData);
  } else {
  // Create new user document
  userData = createDefaultUserData(userId);
  await db.collection('users').doc(userId).set(userData);
- console.log('✅ New user profile created');
+ console.log(String.fromCodePoint(0x2705) + ' New user profile created');
  }
  } catch (error) {
- console.error('❌ Error loading user data:', error);
+ console.error(String.fromCodePoint(0x274C) + ' Error loading user data:', error);
  console.error('Error code:', error.code);
  console.error('Error message:', error.message);
 
  if (error.code === 'permission-denied') {
- console.error('🔒 Firestore permission denied - check security rules');
+ console.error(String.fromCodePoint(0x1F512) + ' Firestore permission denied - check security rules');
  console.error('Suggested rule: allow read, write: if request.auth != null && request.auth.uid == userId;');
  }
 
@@ -1773,7 +1773,7 @@
  return {
  userId: userId,
  name: 'Mia',
- avatar: '🎨',
+ avatar: String.fromCodePoint(0x1F3A8),
  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
  lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
  stats: {
@@ -1877,11 +1877,11 @@
  avatar: avatarToSave
  });
  userData.avatar = avatarToSave;
- console.log('✅ Avatar updated to:', avatarToSave);
+ console.log(String.fromCodePoint(0x2705) + ' Avatar updated to:', avatarToSave);
  updateDashboard();
  hideAvatarPicker();
  } catch (error) {
- console.error('❌ Error updating avatar:', error);
+ console.error(String.fromCodePoint(0x274C) + ' Error updating avatar:', error);
  console.error('Error code:', error.code);
  console.error('Error message:', error.message);
 
@@ -1914,9 +1914,9 @@
  await db.collection('users').doc(currentUser.uid).update({
  activityFeed: firebase.firestore.FieldValue.arrayUnion(activity)
  });
- console.log('✅ Activity added:', title);
+ console.log(String.fromCodePoint(0x2705) + ' Activity added:', title);
  } catch (error) {
- console.error('❌ Error adding activity:', error);
+ console.error(String.fromCodePoint(0x274C) + ' Error adding activity:', error);
  console.error('Error code:', error.code);
  console.error('Error message:', error.message);
 
@@ -2039,14 +2039,14 @@
  updateDashboard();
  }
 
- console.log(`🔥 Streak updated: ${newStreak} days`);
+ console.log(String.fromCodePoint(0x1F525) + ` Streak updated: ${newStreak} days`);
  } catch (error) {
- console.error('❌ Error updating streak:', error);
+ console.error(String.fromCodePoint(0x274C) + ' Error updating streak:', error);
  console.error('Error code:', error.code);
  console.error('Error message:', error.message);
 
  if (error.code === 'permission-denied') {
- console.error('🔒 Firestore permission denied - check security rules for streak updates');
+ console.error(String.fromCodePoint(0x1F512) + ' Firestore permission denied - check security rules for streak updates');
  }
  }
  }
@@ -2084,14 +2084,14 @@
  stats: updates,
  'stats.lastActive': firebase.firestore.FieldValue.serverTimestamp()
  });
- console.log('✅ Stats updated');
+ console.log(String.fromCodePoint(0x2705) + ' Stats updated');
  } catch (error) {
- console.error('❌ Error updating stats:', error);
+ console.error(String.fromCodePoint(0x274C) + ' Error updating stats:', error);
  console.error('Error code:', error.code);
  console.error('Error message:', error.message);
 
  if (error.code === 'permission-denied') {
- console.error('🔒 Firestore permission denied - check security rules for stats updates');
+ console.error(String.fromCodePoint(0x1F512) + ' Firestore permission denied - check security rules for stats updates');
  }
  }
  }
@@ -2105,14 +2105,14 @@
  updateData[`progress.${moduleName}`] = progress;
 
  await db.collection('users').doc(currentUser.uid).update(updateData);
- console.log(`✅ ${moduleName} progress updated: ${progress}%`);
+ console.log(String.fromCodePoint(0x2705) + ` ${moduleName} progress updated: ${progress}%`);
  } catch (error) {
- console.error('❌ Error updating progress:', error);
+ console.error(String.fromCodePoint(0x274C) + ' Error updating progress:', error);
  console.error('Error code:', error.code);
  console.error('Error message:', error.message);
 
  if (error.code === 'permission-denied') {
- console.error('🔒 Firestore permission denied - check security rules for progress updates');
+ console.error(String.fromCodePoint(0x1F512) + ' Firestore permission denied - check security rules for progress updates');
  }
  }
  }
@@ -2126,15 +2126,15 @@
  achievements: firebase.firestore.FieldValue.arrayUnion(achievementId),
  'stats.badgesEarned': firebase.firestore.FieldValue.increment(1)
  });
- console.log(`🏆 Achievement unlocked: ${achievementId}`);
+ console.log(String.fromCodePoint(0x1F3C6) + ` Achievement unlocked: ${achievementId}`);
  showAchievementNotification(achievementId);
  } catch (error) {
- console.error('❌ Error adding achievement:', error);
+ console.error(String.fromCodePoint(0x274C) + ' Error adding achievement:', error);
  console.error('Error code:', error.code);
  console.error('Error message:', error.message);
 
  if (error.code === 'permission-denied') {
- console.error('🔒 Firestore permission denied - check security rules for achievement updates');
+ console.error(String.fromCodePoint(0x1F512) + ' Firestore permission denied - check security rules for achievement updates');
  }
  }
  }
@@ -2151,7 +2151,7 @@
  'science-genius': 'Science Genius'
  };
 
- alert(`🎉 Achievement Unlocked!\n\n🏆 ${achievementNames[achievementId] || achievementId}\n\nCongratulations!`);
+ alert(String.fromCodePoint(0x1F389) + ` Achievement Unlocked!\n\n` + String.fromCodePoint(0x1F3C6) + ` ${achievementNames[achievementId] || achievementId}\n\nCongratulations!`);
  }
 
  // ========================================
@@ -2379,12 +2379,12 @@
  if (authButton) {
  authButton.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('🔘 Auth button clicked');
+ console.log(String.fromCodePoint(0x1F518) + ' Auth button clicked');
  openAuthModal();
  });
- console.log('✅ Auth button listener attached');
+ console.log(String.fromCodePoint(0x2705) + ' Auth button listener attached');
  } else {
- console.error('❌ Auth button not found');
+ console.error(String.fromCodePoint(0x274C) + ' Auth button not found');
  }
 
  // Sign out button
@@ -2392,12 +2392,12 @@
  if (signoutButton) {
  signoutButton.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('🔘 Sign out button clicked');
+ console.log(String.fromCodePoint(0x1F518) + ' Sign out button clicked');
  handleSignOut();
  });
- console.log('✅ Signout button listener attached');
+ console.log(String.fromCodePoint(0x2705) + ' Signout button listener attached');
  } else {
- console.error('❌ Signout button not found');
+ console.error(String.fromCodePoint(0x274C) + ' Signout button not found');
  }
 
  // Close modal button
@@ -2405,12 +2405,12 @@
  if (closeModalBtn) {
  closeModalBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('🔘 Close modal button clicked');
+ console.log(String.fromCodePoint(0x1F518) + ' Close modal button clicked');
  closeAuthModal();
  });
- console.log('✅ Close modal button listener attached');
+ console.log(String.fromCodePoint(0x2705) + ' Close modal button listener attached');
  } else {
- console.error('❌ Close modal button not found');
+ console.error(String.fromCodePoint(0x274C) + ' Close modal button not found');
  }
 
  // Sign in form
@@ -2419,13 +2419,13 @@
  signinForm.addEventListener('submit', function(e) {
  e.preventDefault();
  e.stopPropagation();
- console.log('📝 Sign in form submitted');
+ console.log(String.fromCodePoint(0x1F4DD) + ' Sign in form submitted');
  handleSignIn(e);
  return false;
  });
- console.log('✅ Sign in form listener attached');
+ console.log(String.fromCodePoint(0x2705) + ' Sign in form listener attached');
  } else {
- console.error('❌ Sign in form not found');
+ console.error(String.fromCodePoint(0x274C) + ' Sign in form not found');
  }
 
  // Sign up form
@@ -2434,13 +2434,13 @@
  signupForm.addEventListener('submit', function(e) {
  e.preventDefault();
  e.stopPropagation();
- console.log('📝 Sign up form submitted');
+ console.log(String.fromCodePoint(0x1F4DD) + ' Sign up form submitted');
  handleSignUp(e);
  return false;
  });
- console.log('✅ Sign up form listener attached');
+ console.log(String.fromCodePoint(0x2705) + ' Sign up form listener attached');
  } else {
- console.error('❌ Sign up form not found');
+ console.error(String.fromCodePoint(0x274C) + ' Sign up form not found');
  }
 
  // Show sign up button
@@ -2448,12 +2448,12 @@
  if (showSignupBtn) {
  showSignupBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('🔘 Show signup button clicked');
+ console.log(String.fromCodePoint(0x1F518) + ' Show signup button clicked');
  showSignUp();
  });
- console.log('✅ Show signup button listener attached');
+ console.log(String.fromCodePoint(0x2705) + ' Show signup button listener attached');
  } else {
- console.error('❌ Show signup button not found');
+ console.error(String.fromCodePoint(0x274C) + ' Show signup button not found');
  }
 
  // Show sign in button
@@ -2461,12 +2461,12 @@
  if (showSigninBtn) {
  showSigninBtn.addEventListener('click', function(e) {
  e.preventDefault();
- console.log('🔘 Show signin button clicked');
+ console.log(String.fromCodePoint(0x1F518) + ' Show signin button clicked');
  showSignIn();
  });
- console.log('✅ Show signin button listener attached');
+ console.log(String.fromCodePoint(0x2705) + ' Show signin button listener attached');
  } else {
- console.error('❌ Show signin button not found');
+ console.error(String.fromCodePoint(0x274C) + ' Show signin button not found');
  }
 
  // Click outside modal to close

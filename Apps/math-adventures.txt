@@ -655,6 +655,11 @@ game_type: this.currentGame,
 result: 'correct'
 });
 
+// Add activity to dashboard (every 5 correct answers)
+if (this.stats.correctAnswers % 5 === 0 && window.parent && window.parent.MiaHomeDashboard) {
+window.parent.MiaHomeDashboard.addActivity('math-adventures', 'Solved 5 Math Problems', this.e(0x1F522));
+}
+
 setTimeout(() => {
 this.showCelebration();
 }, 1000);
@@ -719,6 +724,11 @@ document.getElementById('accuracy').textContent = accuracy + '%';
 const progressFill = document.getElementById('progress-fill');
 progressFill.style.width = accuracy + '%';
 progressFill.textContent = accuracy + '%';
+
+// Sync progress with dashboard
+if (window.parent && window.parent.MiaHomeDashboard) {
+window.parent.MiaHomeDashboard.updateModuleProgress('math-adventures', accuracy);
+}
 }
 
 saveProgress() {
